@@ -8,6 +8,7 @@ import mezzari.torres.lucas.offlinefirst.model.Repository
 import mezzari.torres.lucas.offlinefirst.model.User
 import mezzari.torres.lucas.offlinefirst.network.IGithubAPI
 import mezzari.torres.lucas.offlinefirst.network.bound.NetworkBoundResource
+import mezzari.torres.lucas.offlinefirst.network.bound.strategies.AutomaticStrategy
 import mezzari.torres.lucas.offlinefirst.network.bound.strategies.OfflineStrategy
 import mezzari.torres.lucas.offlinefirst.network.bound.strategies.OnlineStrategy
 import mezzari.torres.lucas.offlinefirst.network.wrapper.Resource
@@ -26,7 +27,17 @@ class GithubService(
             NetworkBoundResource(
                 this,
                 api.getUser(userId),
-                OnlineStrategy()
+                object: AutomaticStrategy<User>() {
+                    override suspend fun onSaveData(data: User?) {
+                        data?.also { user ->
+                            userRepository.saveUser(user)
+                        }
+                    }
+
+                    override suspend fun onLoadData(): User? {
+                        return userRepository.getUser(userId)
+                    }
+                }
             )
         }
     }
@@ -48,10 +59,6 @@ class GithubService(
 
                     override suspend fun onLoadData(): List<Repository> {
                         return repositoriesRepository.getRepositories(userId)
-                    }
-
-                    override fun shouldFetch(loadedData: List<Repository>?): Boolean {
-                        return true
                     }
                 }
             )

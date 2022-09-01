@@ -3,11 +3,11 @@ package mezzari.torres.lucas.offlinefirst.ui.search
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import mezzari.torres.lucas.offlinefirst.generic.BaseViewModel
-import mezzari.torres.lucas.offlinefirst.interfaces.IAppDispatcher
-import mezzari.torres.lucas.offlinefirst.model.User
-import mezzari.torres.lucas.offlinefirst.network.service.IGithubService
-import mezzari.torres.lucas.offlinefirst.network.wrapper.Resource
-import mezzari.torres.lucas.offlinefirst.persistence.ISessionManager
+import mezzari.torres.lucas.core.interfaces.IAppDispatcher
+import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.persistence.ISessionManager
+import mezzari.torres.lucas.core.resource.Resource
+import mezzari.torres.lucas.network.service.IGithubService
 
 /**
  * @author Lucas T. Mezzari

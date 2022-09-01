@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import mezzari.torres.lucas.offlinefirst.R
 import mezzari.torres.lucas.offlinefirst.archive.bindTo
 import mezzari.torres.lucas.offlinefirst.databinding.FragmentSearchBinding
 import mezzari.torres.lucas.offlinefirst.generic.BaseFragment
-import mezzari.torres.lucas.offlinefirst.model.User
 import org.koin.android.ext.android.inject
 
 /**

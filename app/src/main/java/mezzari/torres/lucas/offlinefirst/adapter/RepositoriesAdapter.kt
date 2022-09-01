@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import mezzari.torres.lucas.offlinefirst.R
 import mezzari.torres.lucas.offlinefirst.databinding.RowRepositoryBinding
-import mezzari.torres.lucas.offlinefirst.model.Repository
+import mezzari.torres.lucas.core.model.Repository
 
 /**
  * @author Lucas T. Mezzari

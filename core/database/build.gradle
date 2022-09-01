@@ -1,24 +1,18 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
     compileSdk targetVersion
 
-    viewBinding {
-        enabled = true
-    }
-
     defaultConfig {
-        applicationId "mezzari.torres.lucas.offlinefirst"
-
         minSdk minVersion
         targetSdk targetVersion
-        versionCode mVersionCode
-        versionName mVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -27,12 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -42,8 +34,6 @@ dependencies {
 
     //Android
     implementation libraries.android_core
-    implementation libraries.app_compat
-    implementation libraries.material
 
     //Test
     testImplementation libraries.junit_core
@@ -54,17 +44,13 @@ dependencies {
     implementation libraries.coroutines_core
     implementation libraries.coroutines
 
-    // Navigation
-    implementation libraries.navigation_fragment
-    implementation libraries.navigation_ui
-
     // Koin
     implementation libraries.koin_core
-    implementation libraries.koin_navigation
-    implementation libraries.koin_work_manager
+
+    //Room
+    implementation libraries.room_core
+    kapt libraries.room_processor
 
     //Project
     implementation project(":core")
-    implementation project(":core:database")
-    implementation project(":core:network")
 }

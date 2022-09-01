@@ -4,6 +4,7 @@ plugins {
     id 'com.android.library' version '7.1.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
     id 'org.jetbrains.kotlin.kapt' version "1.7.10"
+    id 'org.jetbrains.kotlin.jvm' version '1.6.21' apply false
 }
 
 ext {
@@ -45,6 +46,7 @@ ext {
             retrofit_gson      : "com.squareup.retrofit2:converter-gson:$retrofitVersion",
 
             //Koin
+            koin          : "io.insert-koin:koin-core:$koinVersion",
             koin_core          : "io.insert-koin:koin-android:$koinVersion",
             koin_navigation    : "io.insert-koin:koin-androidx-navigation:$koinVersion",
             koin_work_manager  : "io.insert-koin:koin-androidx-workmanager:$koinVersion",

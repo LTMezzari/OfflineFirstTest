@@ -4,15 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import mezzari.torres.lucas.offlinefirst.generic.BaseViewModel
-import mezzari.torres.lucas.offlinefirst.interfaces.IAppDispatcher
-import mezzari.torres.lucas.offlinefirst.model.Repository
-import mezzari.torres.lucas.offlinefirst.model.User
-import mezzari.torres.lucas.offlinefirst.network.service.IGithubService
-import mezzari.torres.lucas.offlinefirst.network.wrapper.Resource
-import mezzari.torres.lucas.offlinefirst.persistence.ISessionManager
+import mezzari.torres.lucas.core.interfaces.IAppDispatcher
+import mezzari.torres.lucas.core.model.Repository
+import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.network.service.IGithubService
+import mezzari.torres.lucas.core.persistence.ISessionManager
+import mezzari.torres.lucas.core.resource.Resource
 
 /**
  * @author Lucas T. Mezzari

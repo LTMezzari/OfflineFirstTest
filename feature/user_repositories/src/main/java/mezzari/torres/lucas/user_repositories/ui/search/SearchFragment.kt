@@ -10,6 +10,7 @@ import mezzari.torres.lucas.commons.generic.BaseFragment
 import mezzari.torres.lucas.user_repositories.R
 import mezzari.torres.lucas.user_repositories.databinding.FragmentSearchBinding
 import org.koin.android.ext.android.inject
+import java.lang.Exception
 
 /**
  * @author Lucas T. Mezzari
@@ -46,7 +47,11 @@ class SearchFragment : BaseFragment() {
             viewModel.getUser callback@{
                 if (it == null)
                     return@callback
-                navController.navigate(R.id.action_searchFragment_to_repositoriesFragment)
+                try {
+                    navController.navigate(R.id.action_searchFragment_to_repositoriesFragment)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

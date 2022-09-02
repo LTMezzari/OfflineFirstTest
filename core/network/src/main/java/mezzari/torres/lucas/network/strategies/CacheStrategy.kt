@@ -17,8 +17,9 @@ class CacheStrategy<T> constructor(
     private val repository: ICacheRepository,
     call: Deferred<Response<T>>,
     strict: Boolean = true,
+    singleEmit: Boolean = false,
     private val type: Type,
-) : OfflineStrategy<T>(call, strict) {
+) : OfflineStrategy<T>(call, strict, singleEmit) {
     override suspend fun onSaveData(data: T?) {
         val response = data ?: return
         repository.saveCache(transform(response))
@@ -46,9 +47,17 @@ class CacheStrategy<T> constructor(
             callId: String,
             repository: ICacheRepository,
             call: Deferred<Response<T>>,
-            strict: Boolean = true
+            strict: Boolean = true,
+            singleEmit: Boolean = false
         ): CacheStrategy<T> {
-                return CacheStrategy(callId, repository, call, strict, type = object: TypeToken<T>() {}.type)
+            return CacheStrategy(
+                callId,
+                repository,
+                call,
+                strict,
+                singleEmit,
+                type = object : TypeToken<T>() {}.type
+            )
         }
     }
 }

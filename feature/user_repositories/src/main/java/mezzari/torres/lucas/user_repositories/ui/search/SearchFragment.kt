@@ -47,11 +47,7 @@ class SearchFragment : BaseFragment() {
             viewModel.getUser callback@{
                 if (it == null)
                     return@callback
-                try {
-                    navController.navigate(R.id.action_searchFragment_to_repositoriesFragment)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                navController.navigate(R.id.action_searchFragment_to_repositoriesFragment)
             }
         }
     }

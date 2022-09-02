@@ -29,7 +29,8 @@ class GithubService(
                 CacheStrategy(
                     "${this@GithubService::class.java.simpleName}:getUser:$userId",
                     cacheRepository,
-                    api.getUser(userId)
+                    api.getUser(userId),
+                    singleEmit = true
                 )
             )
         }
@@ -43,6 +44,7 @@ class GithubService(
                     "${this@GithubService::class.java.simpleName}:getRepositories:$userId",
                     cacheRepository,
                     api.getUserRepositories(userId),
+                    strict = false
                 )
             )
         }

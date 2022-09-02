@@ -12,7 +12,7 @@ import java.lang.Exception
  * @since 31/08/2022
  */
 abstract class AutomaticStrategy<T>(private val call: Deferred<Response<T>>) :
-    OfflineStrategy<T>(call, false) {
+    OfflineStrategy<T>(call, false, true) {
     override suspend fun execute(
         collector: FlowCollector<Resource<T>>
     ) {

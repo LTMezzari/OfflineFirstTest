@@ -38,6 +38,7 @@ dependencies {
     implementation libraries.android_core
     implementation libraries.app_compat
     implementation libraries.material
+    implementation libraries.swipe_refresh
 
     //Test
     testImplementation libraries.junit_core

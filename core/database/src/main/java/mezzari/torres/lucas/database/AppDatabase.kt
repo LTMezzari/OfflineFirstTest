@@ -13,7 +13,7 @@ import mezzari.torres.lucas.database.entities.UserEntity
  * @author Lucas T. Mezzari
  * @since 31/08/2022
  */
-@Database(version = 2, exportSchema = false, entities = [UserEntity::class, RepositoryEntity::class, CacheEntity::class])
+@Database(version = 1, exportSchema = false, entities = [UserEntity::class, RepositoryEntity::class, CacheEntity::class])
 abstract class AppDatabase: RoomDatabase() {
     abstract fun getUserDao(): UserDao
     abstract fun getRepositoryDao(): RepositoryDao

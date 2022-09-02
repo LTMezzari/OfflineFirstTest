@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * @author Lucas T. Mezzari
  * @since 30/08/2022
  */
-class Repository(
+data class Repository(
     @SerializedName("id")
     var id: String? = null,
 

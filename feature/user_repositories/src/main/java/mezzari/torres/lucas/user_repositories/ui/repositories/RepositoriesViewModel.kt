@@ -11,6 +11,7 @@ import mezzari.torres.lucas.core.model.Repository
 import mezzari.torres.lucas.core.model.User
 import mezzari.torres.lucas.network.service.IGithubService
 import mezzari.torres.lucas.core.persistence.ISessionManager
+import mezzari.torres.lucas.core.resource.OutdatedResource
 import mezzari.torres.lucas.core.resource.Resource
 
 /**
@@ -33,8 +34,13 @@ class RepositoriesViewModel(
     val repositories: LiveData<List<Repository>> = Transformations.map(repositoriesResource) {
         return@map it.data
     }
+    val isOutdated: LiveData<Boolean> = Transformations.map(repositoriesResource) {
+        hasNewData = it is OutdatedResource
+        return@map it is OutdatedResource
+    }
 
     private val user: User? get() = session.user
+    private var hasNewData: Boolean = false
 
     fun getRepositories() {
         val userId = user?.username ?: return
@@ -42,6 +48,16 @@ class RepositoriesViewModel(
             service.getRepositories(userId).collect {
                 repositoriesResource.postValue(it)
             }
+        }
+    }
+
+    fun getNewRepositories(): List<Repository> {
+        val resource = repositoriesResource.value ?: return arrayListOf()
+        return if (resource is OutdatedResource && hasNewData) {
+            hasNewData = false
+            resource.newData ?: arrayListOf()
+        } else {
+            arrayListOf()
         }
     }
 }

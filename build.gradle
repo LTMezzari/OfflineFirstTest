@@ -27,6 +27,7 @@ ext {
             android_core       : "androidx.core:core-ktx:1.8.0",
             app_compat         : "androidx.appcompat:appcompat:1.5.0",
             material           : "com.google.android.material:material:1.6.1",
+            swipe_refresh      : "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0",
 
             //Test
             junit_core         : "junit:junit:4.13.2",
@@ -46,14 +47,14 @@ ext {
             retrofit_gson      : "com.squareup.retrofit2:converter-gson:$retrofitVersion",
 
             //Koin
-            koin          : "io.insert-koin:koin-core:$koinVersion",
+            koin               : "io.insert-koin:koin-core:$koinVersion",
             koin_core          : "io.insert-koin:koin-android:$koinVersion",
             koin_navigation    : "io.insert-koin:koin-androidx-navigation:$koinVersion",
             koin_work_manager  : "io.insert-koin:koin-androidx-workmanager:$koinVersion",
 
             //Room
-            room_core: "androidx.room:room-ktx:$roomVersion",
-            room_processor: "androidx.room:room-compiler:$roomVersion",
+            room_core          : "androidx.room:room-ktx:$roomVersion",
+            room_processor     : "androidx.room:room-compiler:$roomVersion",
 
             //My Libraries
             kotlin_network     : "com.github.LTMezzari:kotlin-network:0.8.4",

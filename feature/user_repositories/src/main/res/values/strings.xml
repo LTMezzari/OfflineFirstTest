@@ -17,4 +17,5 @@
     <string name="label_created">Created:</string>
     <string name="action_repository">Repository</string>
     <string name="action_search_profile">Search Other Profile</string>
+    <string name="message_outdated">There are new information available</string>
 </resources>

@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import mezzari.torres.lucas.commons.generic.BaseFragment
+import mezzari.torres.lucas.user_repositories.R
+import mezzari.torres.lucas.user_repositories.adapter.RepositoriesAdapter
 import mezzari.torres.lucas.user_repositories.databinding.FragmentRepositoriesBinding
 import org.koin.android.ext.android.inject
 
@@ -15,11 +17,11 @@ import org.koin.android.ext.android.inject
  * @author Lucas T. Mezzari
  * @since 30/08/2022
  */
-class RepositoriesFragment: BaseFragment() {
+class RepositoriesFragment : BaseFragment() {
     private lateinit var binding: FragmentRepositoriesBinding
     private val viewModel: RepositoriesViewModel by inject()
-    private val adapter: mezzari.torres.lucas.user_repositories.adapter.RepositoriesAdapter by lazy {
-        mezzari.torres.lucas.user_repositories.adapter.RepositoriesAdapter(requireContext())
+    private val adapter: RepositoriesAdapter by lazy {
+        RepositoriesAdapter(requireContext())
     }
 
     override fun onCreateView(
@@ -35,6 +37,16 @@ class RepositoriesFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.srlRepositories.setOnRefreshListener {
+            val newRepositories = viewModel.getNewRepositories()
+            if (newRepositories.isNotEmpty()) {
+                adapter.items = newRepositories
+                binding.srlRepositories.isRefreshing = false
+                return@setOnRefreshListener
+            }
+            viewModel.getRepositories()
+        }
+
         binding.rvRepositories.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = this@RepositoriesFragment.adapter
@@ -42,6 +54,7 @@ class RepositoriesFragment: BaseFragment() {
 
         viewModel.repositories.observe(viewLifecycleOwner) {
             adapter.items = it ?: arrayListOf()
+            binding.srlRepositories.isRefreshing = false
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) {
@@ -51,6 +64,12 @@ class RepositoriesFragment: BaseFragment() {
         viewModel.error.observe(viewLifecycleOwner) {
             val error = it ?: return@observe
             Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
+        }
+
+        viewModel.isOutdated.observe(viewLifecycleOwner) {
+            if (it == false)
+                return@observe
+            Toast.makeText(requireContext(), R.string.message_outdated, Toast.LENGTH_LONG).show()
         }
 
         viewModel.getRepositories()

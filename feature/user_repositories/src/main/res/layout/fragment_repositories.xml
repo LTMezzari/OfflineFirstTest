@@ -5,8 +5,14 @@
     android:layout_height="match_parent"
     tools:context="mezzari.torres.lucas.user_repositories.ui.repositories.RepositoriesFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRepositories"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srlRepositories"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRepositories"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>

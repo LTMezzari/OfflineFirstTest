@@ -3,6 +3,8 @@ package mezzari.torres.lucas.database.di
 import android.app.Application
 import androidx.room.Room
 import mezzari.torres.lucas.database.AppDatabase
+import mezzari.torres.lucas.database.repositories.cache.CacheRepository
+import mezzari.torres.lucas.database.repositories.cache.ICacheRepository
 import mezzari.torres.lucas.database.repositories.repository.IRepositoriesRepository
 import mezzari.torres.lucas.database.repositories.repository.RepositoriesRepository
 import mezzari.torres.lucas.database.repositories.user.IUserRepository
@@ -19,7 +21,7 @@ fun getDatabaseModule(application: Application) = module {
             application,
             AppDatabase::class.java,
             "my-db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
     single {
         val dataBase: AppDatabase = get()
@@ -29,11 +31,18 @@ fun getDatabaseModule(application: Application) = module {
         val dataBase: AppDatabase = get()
         dataBase.getRepositoryDao()
     }
+    single {
+        val dataBase: AppDatabase = get()
+        dataBase.getCacheDao()
+    }
 
     single<IUserRepository> {
         UserRepository(get())
     }
     single<IRepositoriesRepository> {
         RepositoriesRepository(get())
+    }
+    single<ICacheRepository> {
+        CacheRepository(get())
     }
 }

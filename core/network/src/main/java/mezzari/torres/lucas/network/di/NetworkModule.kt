@@ -29,6 +29,7 @@ val networkModule = module {
         mezzari.torres.lucas.network.service.GithubService(
             get(),
             get(),
+            get(),
             get()
         )
     }

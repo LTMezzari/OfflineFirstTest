@@ -10,9 +10,9 @@ class OutdatedResource<T>(
     message: String? = null,
     val newData: T? = null
 ) :
-    mezzari.torres.lucas.core.resource.Resource<T>(status, data, message) {
+    Resource<T>(status, data, message) {
     companion object {
-        fun <T> success(oldResource: mezzari.torres.lucas.core.resource.Resource<T>, newData: T?): OutdatedResource<T> {
+        fun <T> success(oldResource: Resource<T>, newData: T?): OutdatedResource<T> {
             return OutdatedResource(
                 Status.SUCCESS,
                 oldResource.data,

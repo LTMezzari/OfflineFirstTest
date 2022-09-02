@@ -1,0 +1,20 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+dependencies {
+    // Koin
+    implementation libraries.koin
+
+    // Coroutines
+    implementation libraries.coroutines_core
+
+    //Retrofit
+    implementation libraries.retrofit_gson
+}

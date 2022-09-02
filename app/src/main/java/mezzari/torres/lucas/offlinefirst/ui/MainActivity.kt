@@ -2,13 +2,12 @@ package mezzari.torres.lucas.offlinefirst.ui
 
 import android.os.Bundle
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import mezzari.torres.lucas.offlinefirst.R
 import mezzari.torres.lucas.offlinefirst.databinding.ActivityMainBinding
-import mezzari.torres.lucas.offlinefirst.generic.BaseActivity
+import mezzari.torres.lucas.commons.generic.BaseActivity
 
 /**
  * @author Lucas T. Mezzari

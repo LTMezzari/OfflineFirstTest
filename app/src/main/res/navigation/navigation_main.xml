@@ -3,19 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_main"
-    app:startDestination="@id/searchFragment">
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="mezzari.torres.lucas.offlinefirst.ui.search.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
-        <action
-            android:id="@+id/action_searchFragment_to_repositoriesFragment"
-            app:destination="@id/repositoriesFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/repositoriesFragment"
-        android:name="mezzari.torres.lucas.offlinefirst.ui.repositories.RepositoriesFragment"
-        android:label="fragment_repositories"
-        tools:layout="@layout/fragment_repositories" />
+    app:startDestination="@id/navigation_user_repositories">
+    <include app:graph="@navigation/navigation_user_repositories" />
 </navigation>

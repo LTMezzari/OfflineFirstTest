@@ -1,0 +1,65 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdk targetVersion
+
+    viewBinding {
+        enabled = true
+    }
+
+    defaultConfig {
+        minSdk minVersion
+        targetSdk targetVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    //Android
+    implementation libraries.android_core
+    implementation libraries.app_compat
+    implementation libraries.material
+
+    //Test
+    testImplementation libraries.junit_core
+    androidTestImplementation libraries.junit_android
+    androidTestImplementation libraries.espresso_core
+
+    // Coroutines
+    implementation libraries.coroutines_core
+    implementation libraries.coroutines
+
+    // Navigation
+    implementation libraries.navigation_fragment
+    implementation libraries.navigation_ui
+
+    // Koin
+    implementation libraries.koin_core
+    implementation libraries.koin_navigation
+    implementation libraries.koin_work_manager
+
+    //Project
+    implementation project(":core")
+    implementation project(":commons")
+    implementation project(":core:database")
+    implementation project(":core:network")
+}

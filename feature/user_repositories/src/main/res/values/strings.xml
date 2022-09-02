@@ -1,0 +1,20 @@
+<resources>
+    <string name="action_search">Search</string>
+    <string name="hint_username">Username</string>
+    <string name="message_search_error">There was found no user with the given username</string>
+    <string name="label_date_joined">Joined:</string>
+    <string name="label_company">Company:</string>
+    <string name="label_location">Location:</string>
+    <string name="label_bio">Biography</string>
+    <string name="label_following">Following</string>
+    <string name="label_followers">Followers -</string>
+    <string name="label_overview">Overview</string>
+    <string name="placeholder_overview">No overview provided</string>
+    <string name="action_repositories">Repositories</string>
+    <string name="action_profile">Profile</string>
+    <string name="message_empty_repositories">This user has no public repository</string>
+    <string name="label_updated">Updated:</string>
+    <string name="label_created">Created:</string>
+    <string name="action_repository">Repository</string>
+    <string name="action_search_profile">Search Other Profile</string>
+</resources>

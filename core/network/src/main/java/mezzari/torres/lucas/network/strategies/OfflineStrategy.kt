@@ -7,6 +7,7 @@ import mezzari.torres.lucas.network.wrapper.OfflineResource
 import mezzari.torres.lucas.core.resource.OutdatedResource
 import mezzari.torres.lucas.core.resource.Resource
 import mezzari.torres.lucas.network.wrapper.Response
+import java.lang.Exception
 
 /**
  * @author Lucas T. Mezzari
@@ -20,33 +21,37 @@ abstract class OfflineStrategy<T>(
         collector: FlowCollector<Resource<T>>,
     ) {
         collector.emit(Resource.loading())
-        val loadedData = onLoadData()
-        val loadedResource = Resource.success(loadedData)
-        collector.emit(loadedResource)
+        try {
+            val loadedData = onLoadData()
+            val loadedResource = Resource.success(loadedData)
+            collector.emit(loadedResource)
 
-        if (!shouldFetch(loadedData))
-            return
+            if (!shouldFetch(loadedData))
+                return
 
-        when (val result = call.await()) {
-            is Response.Success -> {
-                val fetchedData = result.data
-                collector.emit(
-                    if (strict) {
-                        Resource.success(fetchedData)
-                    } else {
-                        OutdatedResource.success(
-                            loadedResource,
-                            fetchedData
-                        )
+            when (val result = call.await()) {
+                is Response.Success -> {
+                    val fetchedData = result.data
+                    collector.emit(
+                        if (strict) {
+                            Resource.success(fetchedData)
+                        } else {
+                            OutdatedResource.success(
+                                loadedResource,
+                                fetchedData
+                            )
+                        }
+                    )
+                    if (shouldSave(loadedData, fetchedData)) {
+                        onSaveData(fetchedData)
                     }
-                )
-                if (shouldSave(loadedData, fetchedData)) {
-                    onSaveData(fetchedData)
+                }
+                is Response.Failure -> {
+                    collector.emit(OfflineResource.create(loadedResource, result.error, result.data))
                 }
             }
-            is Response.Failure -> {
-                collector.emit(OfflineResource.create(loadedResource, result.error, result.data))
-            }
+        } catch (e: Exception) {
+            collector.emit(Resource.error(e.message))
         }
     }
 

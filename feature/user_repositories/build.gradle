@@ -56,11 +56,11 @@ dependencies {
     // Koin
     implementation libraries.koin_core
     implementation libraries.koin_navigation
-    implementation libraries.koin_work_manager
 
     //Project
     implementation project(":core")
     implementation project(":commons")
     implementation project(":core:database")
     implementation project(":core:network")
+    implementation project(":core:android")
 }

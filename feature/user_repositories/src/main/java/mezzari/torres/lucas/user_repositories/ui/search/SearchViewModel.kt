@@ -2,10 +2,11 @@ package mezzari.torres.lucas.user_repositories.ui.search
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
+import mezzari.torres.lucas.android.persistence.preferences.IPreferencesManager
+import mezzari.torres.lucas.android.persistence.session.ISessionManager
 import mezzari.torres.lucas.commons.generic.BaseViewModel
 import mezzari.torres.lucas.core.interfaces.IAppDispatcher
 import mezzari.torres.lucas.core.model.User
-import mezzari.torres.lucas.core.persistence.ISessionManager
 import mezzari.torres.lucas.core.resource.Resource
 import mezzari.torres.lucas.network.service.IGithubService
 
@@ -17,6 +18,7 @@ class SearchViewModel(
     private val dispatcher: IAppDispatcher,
     private val service: IGithubService,
     private val session: ISessionManager,
+    private val preferences: IPreferencesManager,
 ) : BaseViewModel() {
     val search: MutableLiveData<String> = MutableLiveData()
 
@@ -59,6 +61,7 @@ class SearchViewModel(
                     launch(dispatcher.main) {
                         callback(it.data)
                         session.user = it.data
+                        preferences.user = it.data
                     }
                 }
             }

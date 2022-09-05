@@ -13,4 +13,6 @@ interface IGithubService {
     fun getUser(userId: String): Flow<Resource<User>>
     
     fun getRepositories(userId: String): Flow<Resource<List<Repository>>>
+
+    fun syncRepositories(userId: String): Flow<Resource<List<Repository>>>
 }

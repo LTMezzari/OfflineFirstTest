@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.core.persistence
+package mezzari.torres.lucas.android.persistence.session
 
 import mezzari.torres.lucas.core.model.User
 

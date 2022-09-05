@@ -2,8 +2,6 @@ package mezzari.torres.lucas.core.di
 
 import kotlinx.coroutines.Dispatchers
 import mezzari.torres.lucas.core.interfaces.IAppDispatcher
-import mezzari.torres.lucas.core.persistence.ISessionManager
-import mezzari.torres.lucas.core.persistence.SessionManager
 import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
 
@@ -18,5 +16,4 @@ val coreModule = module {
             override var io: CoroutineContext = Dispatchers.IO
         }
     }
-    single<ISessionManager> { SessionManager() }
 }

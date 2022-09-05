@@ -11,6 +11,8 @@ import mezzari.torres.lucas.database.repositories.repository.IRepositoriesReposi
 import mezzari.torres.lucas.database.repositories.user.IUserRepository
 import mezzari.torres.lucas.network.IGithubAPI
 import mezzari.torres.lucas.network.strategies.CacheStrategy
+import mezzari.torres.lucas.network.strategies.OfflineStrategy
+import mezzari.torres.lucas.network.strategies.OnlineStrategy
 
 /**
  * @author Lucas T. Mezzari
@@ -46,6 +48,18 @@ class GithubService(
                     api.getUserRepositories(userId),
                     strict = false
                 )
+            )
+        }
+    }
+
+    override fun syncRepositories(userId: String): Flow<Resource<List<Repository>>> {
+        return flow {
+            DataBoundResource(
+                this,
+                OnlineStrategy(api.getUserRepositories(userId)) {
+                    val repositories = it ?: return@OnlineStrategy
+                    repositoriesRepository.saveRepositories(repositories)
+                }
             )
         }
     }

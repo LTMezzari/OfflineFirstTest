@@ -10,7 +10,7 @@ import org.koin.dsl.module
  * @since 01/09/2022
  */
 val userRepositoriesModule = module {
-    viewModel { SearchViewModel(get(), get(), get()) }
+    viewModel { SearchViewModel(get(), get(), get(), get()) }
     viewModel {
         RepositoriesViewModel(
             get(),

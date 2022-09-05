@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id 'com.android.application' version '7.1.2' apply false
-    id 'com.android.library' version '7.1.2' apply false
-    id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
+    id 'com.android.application' version '7.2.2' apply false
+    id 'com.android.library' version '7.2.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
     id 'org.jetbrains.kotlin.kapt' version "1.7.10"
     id 'org.jetbrains.kotlin.jvm' version '1.6.21' apply false
 }
@@ -21,6 +21,7 @@ ext {
     retrofitVersion = '2.9.0'
     koinVersion = '3.2.0'
     roomVersion = '2.4.3'
+    workVersion = "2.7.1"
 
     libraries = [
             //Android
@@ -38,6 +39,9 @@ ext {
             coroutines_core    : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
             coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion",
 
+            //Work Manager
+            work_manager       : "androidx.work:work-runtime-ktx:$workVersion",
+
             //Navigation
             navigation_fragment: "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
             navigation_ui      : "androidx.navigation:navigation-ui-ktx:$navigationVersion",
@@ -50,7 +54,7 @@ ext {
             koin               : "io.insert-koin:koin-core:$koinVersion",
             koin_core          : "io.insert-koin:koin-android:$koinVersion",
             koin_navigation    : "io.insert-koin:koin-androidx-navigation:$koinVersion",
-            koin_work_manager  : "io.insert-koin:koin-androidx-workmanager:$koinVersion",
+            koin_worker  : "io.insert-koin:koin-androidx-workmanager:$koinVersion",
 
             //Room
             room_core          : "androidx.room:room-ktx:$roomVersion",

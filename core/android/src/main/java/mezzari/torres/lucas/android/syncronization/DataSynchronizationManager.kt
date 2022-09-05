@@ -38,9 +38,9 @@ class DataSynchronizationManager(private val manager: WorkManager) : Synchroniza
         return PeriodicWorkRequest.Builder(
             SynchronizationWorker::class.java,
             3,
-            TimeUnit.MINUTES,
+            TimeUnit.HOURS,
             1,
-            TimeUnit.MINUTES
+            TimeUnit.HOURS
         ).setConstraints(buildConstraints()).build()
     }
 

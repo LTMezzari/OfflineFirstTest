@@ -7,8 +7,8 @@ import kotlin.reflect.KProperty
  * @author Lucas T. Mezzari
  * @since 11/11/2022
  */
-fun guard(vararg values: Any?): List<Any>? {
-    val list = arrayListOf<Any>()
+fun <T>guard(vararg values: T?): List<T>? {
+    val list = arrayListOf<T>()
     values.forEach {
         if (it == null)
             return null
@@ -24,14 +24,14 @@ inline infix fun <T>T?.elvis(elseBlock: () -> Nothing): T {
     return this
 }
 
-fun unwrap(vararg values: Any?): Array<Any>? {
-    val array = arrayListOf<Any>()
+fun <T>unwrap(vararg values: T?): List<T>? {
+    val array = arrayListOf<T>()
     values.forEach { value ->
         if (value == null)
             return null
         array += value
     }
-    return array.toArray()
+    return array
 }
 
 infix fun <T> T?.then(executable: (T) -> Unit) {

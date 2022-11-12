@@ -1,6 +1,6 @@
 package mezzari.torres.lucas.offlinefirst
 
-import mezzari.torres.lucas.android.syncronization.SynchronizationManager
+import mezzari.torres.lucas.android.synchronization.SynchronizationManager
 import mezzari.torres.lucas.offlinefirst.di.getModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -24,7 +24,7 @@ class Application : android.app.Application(), KoinComponent {
             modules(getModules(this@Application))
         }
 
-//        val synchronizationManager: SynchronizationManager = get()
-//        synchronizationManager.scheduleSynchronizations()
+        val synchronizationManager: SynchronizationManager = get()
+        synchronizationManager.scheduleSynchronizations()
     }
 }

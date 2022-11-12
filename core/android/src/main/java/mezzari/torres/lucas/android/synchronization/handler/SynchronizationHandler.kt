@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.android.syncronization.handler
+package mezzari.torres.lucas.android.synchronization.handler
 
 /**
  * @author Lucas T. Mezzari

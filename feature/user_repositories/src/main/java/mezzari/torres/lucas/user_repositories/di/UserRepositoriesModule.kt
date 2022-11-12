@@ -1,7 +1,9 @@
 package mezzari.torres.lucas.user_repositories.di
 
+import mezzari.torres.lucas.android.synchronization.handler.SynchronizationHandler
 import mezzari.torres.lucas.user_repositories.service.GithubService
 import mezzari.torres.lucas.user_repositories.service.IGithubService
+import mezzari.torres.lucas.user_repositories.synchronization.RepositoryHandler
 import mezzari.torres.lucas.user_repositories.ui.repositories.RepositoriesViewModel
 import mezzari.torres.lucas.user_repositories.ui.search.SearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -28,4 +30,5 @@ val userRepositoriesModule = module {
             get()
         )
     }
+    single<SynchronizationHandler> { RepositoryHandler(get(), get()) }
 }

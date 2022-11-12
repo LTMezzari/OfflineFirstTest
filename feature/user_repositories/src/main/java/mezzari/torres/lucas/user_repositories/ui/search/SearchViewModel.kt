@@ -26,40 +26,38 @@ class SearchViewModel(
 
     private val searchResource: MutableLiveData<Resource<User>> = MutableLiveData()
     val isLoading: LiveData<Boolean> = Transformations.map(searchResource) {
-        return@map it.status == Resource.Status.LOADING
+        return@map it?.status == Resource.Status.LOADING
     }
     val error: LiveData<String> = Transformations.map(searchResource) {
         return@map if (it.status != Resource.Status.FAILURE) null else it.message
     }
 
+    val isSearchValid: LiveData<Boolean> = Transformations.map(search) {
+        return@map it != null &&
+                !it.isNullOrBlank() &&
+                !it.isNullOrEmpty()
+    }
+
     private val _isValid: MediatorLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
         postValue(false)
-        addSource(search) {
+        val observable: (Boolean) -> Unit = {
             postValue(
                 isLoading.value != true &&
-                        it != null &&
-                        !it.isNullOrBlank() &&
-                        !it.isNullOrEmpty()
+                        isSearchValid.value == true
             )
         }
-
-        addSource(isLoading) {
-            postValue(
-                it != true &&
-                        search.value != null &&
-                        !search.value.isNullOrBlank() &&
-                        !search.value.isNullOrEmpty()
-            )
-        }
+        addSource(isSearchValid, observable)
+        addSource(isLoading, observable)
     }
-    val isValid: LiveData<Boolean> get() = _isValid
+    val isValid: LiveData<Boolean> by this::_isValid
 
     fun getUser(callback: (User?) -> Unit) {
-        val (userId) = guard(search.value) elvis {
+        if (isValid.value != true) return
+        val (userId: String) = guard(search.value) elvis {
             return
         }
         viewModelScope.launch(dispatcher.io) {
-            service.getUser(userId.toString()).collect {
+            service.getUser(userId).collect {
                 searchResource.postValue(it)
                 if (it.status != Resource.Status.LOADING) {
                     launch(dispatcher.main) {

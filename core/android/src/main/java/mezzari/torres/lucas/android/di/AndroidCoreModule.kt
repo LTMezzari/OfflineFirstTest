@@ -6,8 +6,8 @@ import mezzari.torres.lucas.android.persistence.preferences.IPreferencesManager
 import mezzari.torres.lucas.android.persistence.preferences.PreferencesManager
 import mezzari.torres.lucas.android.persistence.session.ISessionManager
 import mezzari.torres.lucas.android.persistence.session.SessionManager
-import mezzari.torres.lucas.android.syncronization.DataSynchronizationManager
-import mezzari.torres.lucas.android.syncronization.SynchronizationManager
+import mezzari.torres.lucas.android.synchronization.DataSynchronizationManager
+import mezzari.torres.lucas.android.synchronization.SynchronizationManager
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -24,8 +24,11 @@ fun getAndroidModule(context: Context): Module {
 
         //Synchronize
         single { WorkManager.getInstance(context) }
-        single<SynchronizationManager> { DataSynchronizationManager(get()) }
-//        single<SynchronizationAdapter> { DataSynchronizationAdapter(get(), get()) }
+        single<SynchronizationManager> {
+            val manager = DataSynchronizationManager(get())
+            manager.handlers.addAll(getAll())
+            return@single manager
+        }
 
         //Workers
         worker { DataSynchronizationManager.SynchronizationWorker(context, get()) }

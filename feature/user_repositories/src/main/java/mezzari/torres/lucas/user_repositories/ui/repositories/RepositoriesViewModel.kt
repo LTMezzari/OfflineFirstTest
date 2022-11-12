@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import mezzari.torres.lucas.android.persistence.session.ISessionManager
 import mezzari.torres.lucas.commons.generic.BaseViewModel
+import mezzari.torres.lucas.core.archive.elvis
+import mezzari.torres.lucas.core.archive.guard
 import mezzari.torres.lucas.core.interfaces.IAppDispatcher
 import mezzari.torres.lucas.core.model.Repository
 import mezzari.torres.lucas.core.model.User
@@ -52,7 +54,7 @@ class RepositoriesViewModel(
     }
 
     fun getNewRepositories(): List<Repository> {
-        val resource = repositoriesResource.value ?: return arrayListOf()
+        val (resource: Resource<List<Repository>>) = guard(repositoriesResource.value) elvis { return arrayListOf() }
         return if (resource is OutdatedResource && hasNewData) {
             hasNewData = false
             resource.newData ?: arrayListOf()

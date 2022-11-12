@@ -1,11 +1,9 @@
-package mezzari.torres.lucas.android.syncronization
+package mezzari.torres.lucas.android.synchronization
 
 import android.content.Context
 import android.util.Log
 import androidx.work.*
-import mezzari.torres.lucas.android.syncronization.adapter.SynchronizationAdapter
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import mezzari.torres.lucas.android.synchronization.handler.SynchronizationHandler
 import java.util.concurrent.TimeUnit
 
 /**
@@ -13,6 +11,9 @@ import java.util.concurrent.TimeUnit
  * @since 02/09/2022
  */
 class DataSynchronizationManager(private val manager: WorkManager) : SynchronizationManager {
+
+    override val handlers: ArrayList<SynchronizationHandler> by ::mHandlers
+
     override fun scheduleSynchronizations() {
         Log.d(javaClass.simpleName, "Scheduling Worker")
         manager.enqueueUniquePeriodicWork(
@@ -38,7 +39,7 @@ class DataSynchronizationManager(private val manager: WorkManager) : Synchroniza
         return PeriodicWorkRequest.Builder(
             SynchronizationWorker::class.java,
             3,
-            TimeUnit.HOURS,
+            TimeUnit.MINUTES,
             1,
             TimeUnit.HOURS
         ).setConstraints(buildConstraints()).build()
@@ -47,14 +48,10 @@ class DataSynchronizationManager(private val manager: WorkManager) : Synchroniza
     class SynchronizationWorker(
         context: Context,
         params: WorkerParameters
-    ) :
-        CoroutineWorker(context, params), KoinComponent {
-        private val adapter: SynchronizationAdapter by inject()
-
+    ) : CoroutineWorker(context, params) {
         override suspend fun doWork(): Result {
             Log.d(DataSynchronizationManager::class.java.simpleName, "Starting Work")
-            for (i in 0 until adapter.handlersCount()) {
-                val handler = adapter.buildHandler(i)
+            for (handler in mHandlers) {
                 val wasSuccessful = handler.synchronize()
                 Log.d(
                     javaClass.simpleName,
@@ -65,5 +62,9 @@ class DataSynchronizationManager(private val manager: WorkManager) : Synchroniza
             }
             return Result.success()
         }
+    }
+
+    companion object {
+        val mHandlers: ArrayList<SynchronizationHandler> = ArrayList()
     }
 }

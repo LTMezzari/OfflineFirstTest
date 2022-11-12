@@ -5,10 +5,12 @@ import kotlinx.coroutines.launch
 import mezzari.torres.lucas.android.persistence.preferences.IPreferencesManager
 import mezzari.torres.lucas.android.persistence.session.ISessionManager
 import mezzari.torres.lucas.commons.generic.BaseViewModel
+import mezzari.torres.lucas.core.archive.elvis
+import mezzari.torres.lucas.core.archive.guard
 import mezzari.torres.lucas.core.interfaces.IAppDispatcher
 import mezzari.torres.lucas.core.model.User
 import mezzari.torres.lucas.core.resource.Resource
-import mezzari.torres.lucas.network.service.IGithubService
+import mezzari.torres.lucas.user_repositories.service.IGithubService
 
 /**
  * @author Lucas T. Mezzari
@@ -53,9 +55,11 @@ class SearchViewModel(
     val isValid: LiveData<Boolean> get() = _isValid
 
     fun getUser(callback: (User?) -> Unit) {
-        val userId = search.value ?: return
+        val (userId) = guard(search.value) elvis {
+            return
+        }
         viewModelScope.launch(dispatcher.io) {
-            service.getUser(userId).collect {
+            service.getUser(userId.toString()).collect {
                 searchResource.postValue(it)
                 if (it.status != Resource.Status.LOADING) {
                     launch(dispatcher.main) {

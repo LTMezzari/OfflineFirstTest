@@ -10,7 +10,7 @@ import mezzari.torres.lucas.commons.generic.BaseViewModel
 import mezzari.torres.lucas.core.interfaces.IAppDispatcher
 import mezzari.torres.lucas.core.model.Repository
 import mezzari.torres.lucas.core.model.User
-import mezzari.torres.lucas.network.service.IGithubService
+import mezzari.torres.lucas.user_repositories.service.IGithubService
 import mezzari.torres.lucas.core.resource.OutdatedResource
 import mezzari.torres.lucas.core.resource.Resource
 

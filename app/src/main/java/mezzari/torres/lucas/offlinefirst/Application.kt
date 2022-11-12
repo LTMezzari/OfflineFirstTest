@@ -24,7 +24,7 @@ class Application : android.app.Application(), KoinComponent {
             modules(getModules(this@Application))
         }
 
-        val synchronizationManager: SynchronizationManager = get()
-        synchronizationManager.scheduleSynchronizations()
+//        val synchronizationManager: SynchronizationManager = get()
+//        synchronizationManager.scheduleSynchronizations()
     }
 }

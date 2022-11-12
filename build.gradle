@@ -54,7 +54,7 @@ ext {
             koin               : "io.insert-koin:koin-core:$koinVersion",
             koin_core          : "io.insert-koin:koin-android:$koinVersion",
             koin_navigation    : "io.insert-koin:koin-androidx-navigation:$koinVersion",
-            koin_worker  : "io.insert-koin:koin-androidx-workmanager:$koinVersion",
+            koin_worker        : "io.insert-koin:koin-androidx-workmanager:$koinVersion",
 
             //Room
             room_core          : "androidx.room:room-ktx:$roomVersion",

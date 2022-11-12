@@ -9,8 +9,7 @@ class OutdatedResource<T>(
     data: T? = null,
     message: String? = null,
     val newData: T? = null
-) :
-    Resource<T>(status, data, message) {
+) : Resource<T>(status, data, message) {
     companion object {
         fun <T> success(oldResource: Resource<T>, newData: T?): OutdatedResource<T> {
             return OutdatedResource(

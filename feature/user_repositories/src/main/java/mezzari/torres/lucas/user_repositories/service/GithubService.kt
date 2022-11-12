@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.network.service
+package mezzari.torres.lucas.user_repositories.service
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,7 +11,6 @@ import mezzari.torres.lucas.database.repositories.repository.IRepositoriesReposi
 import mezzari.torres.lucas.database.repositories.user.IUserRepository
 import mezzari.torres.lucas.network.IGithubAPI
 import mezzari.torres.lucas.network.strategies.CacheStrategy
-import mezzari.torres.lucas.network.strategies.OfflineStrategy
 import mezzari.torres.lucas.network.strategies.OnlineStrategy
 
 /**

@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.android
+package mezzari.torres.lucas.core
 
 import mezzari.torres.lucas.core.archive.elvis
 import mezzari.torres.lucas.core.archive.guard

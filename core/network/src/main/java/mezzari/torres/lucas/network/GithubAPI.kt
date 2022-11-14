@@ -13,7 +13,7 @@ import retrofit2.http.Path
  * @since 30/08/2022
  */
 @Route("https://api.github.com/")
-interface IGithubAPI {
+interface GithubAPI {
     @GET("users/{userId}")
     fun getUser(
         @Path("userId") userId: String

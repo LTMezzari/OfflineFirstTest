@@ -6,11 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import mezzari.torres.lucas.commons.archive.bindTo
-import mezzari.torres.lucas.commons.generic.BaseFragment
+import mezzari.torres.lucas.android.generic.BaseFragment
 import mezzari.torres.lucas.user_repositories.R
 import mezzari.torres.lucas.user_repositories.databinding.FragmentSearchBinding
 import org.koin.android.ext.android.inject
-import java.lang.Exception
 
 /**
  * @author Lucas T. Mezzari

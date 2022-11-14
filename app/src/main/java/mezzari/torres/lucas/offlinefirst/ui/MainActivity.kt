@@ -7,7 +7,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import mezzari.torres.lucas.offlinefirst.R
 import mezzari.torres.lucas.offlinefirst.databinding.ActivityMainBinding
-import mezzari.torres.lucas.commons.generic.BaseActivity
+import mezzari.torres.lucas.android.generic.BaseActivity
 
 /**
  * @author Lucas T. Mezzari

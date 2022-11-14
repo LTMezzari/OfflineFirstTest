@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.database.repositories.repository
+package mezzari.torres.lucas.database.store.repository
 
 import mezzari.torres.lucas.core.model.Repository
 import mezzari.torres.lucas.database.dao.RepositoryDao
@@ -10,9 +10,9 @@ import mezzari.torres.lucas.database.entities.asEntry
  * @author Lucas T. Mezzari
  * @since 31/08/2022
  */
-class RepositoriesRepository(
+class RepositoriesStoreImpl(
     private val dao: RepositoryDao
-): IRepositoriesRepository {
+): RepositoriesStore {
     override suspend fun getRepositories(userId: String): List<Repository> {
         return dao.getRepositories(userId)?.map {
             it.asEntry()

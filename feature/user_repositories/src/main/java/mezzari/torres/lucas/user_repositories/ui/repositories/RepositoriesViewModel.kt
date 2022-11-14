@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import mezzari.torres.lucas.android.persistence.session.ISessionManager
-import mezzari.torres.lucas.commons.generic.BaseViewModel
+import mezzari.torres.lucas.android.persistence.session.SessionManager
+import mezzari.torres.lucas.android.generic.BaseViewModel
 import mezzari.torres.lucas.core.archive.elvis
 import mezzari.torres.lucas.core.archive.guard
-import mezzari.torres.lucas.core.interfaces.IAppDispatcher
+import mezzari.torres.lucas.core.interfaces.AppDispatcher
 import mezzari.torres.lucas.core.model.Repository
 import mezzari.torres.lucas.core.model.User
-import mezzari.torres.lucas.user_repositories.service.IGithubService
+import mezzari.torres.lucas.user_repositories.repository.GithubRepository
 import mezzari.torres.lucas.core.resource.OutdatedResource
 import mezzari.torres.lucas.core.resource.Resource
 
@@ -21,9 +21,9 @@ import mezzari.torres.lucas.core.resource.Resource
  * @since 30/08/2022
  */
 class RepositoriesViewModel(
-    private val dispatcher: IAppDispatcher,
-    private val service: IGithubService,
-    private val session: ISessionManager,
+    private val dispatcher: AppDispatcher,
+    private val service: GithubRepository,
+    private val session: SessionManager,
 ) : BaseViewModel() {
     private val repositoriesResource: MutableLiveData<Resource<List<Repository>>> =
         MutableLiveData()

@@ -2,18 +2,18 @@ package mezzari.torres.lucas.user_repositories.synchronization
 
 import android.util.Log
 import kotlinx.coroutines.CompletableDeferred
-import mezzari.torres.lucas.android.persistence.preferences.IPreferencesManager
+import mezzari.torres.lucas.android.persistence.preferences.PreferencesManager
 import mezzari.torres.lucas.android.synchronization.handler.SynchronizationHandler
 import mezzari.torres.lucas.core.resource.Resource
-import mezzari.torres.lucas.user_repositories.service.IGithubService
+import mezzari.torres.lucas.user_repositories.repository.GithubRepository
 
 /**
  * @author Lucas T. Mezzari
  * @since 05/09/2022
  */
 class RepositoryHandler(
-    private val service: IGithubService,
-    private val preferences: IPreferencesManager
+    private val service: GithubRepository,
+    private val preferences: PreferencesManager
 ) : SynchronizationHandler {
     override suspend fun synchronize(): Boolean {
         val userId = preferences.user?.username ?: return true

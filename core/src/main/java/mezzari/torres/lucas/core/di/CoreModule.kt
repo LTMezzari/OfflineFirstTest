@@ -1,7 +1,7 @@
 package mezzari.torres.lucas.core.di
 
 import kotlinx.coroutines.Dispatchers
-import mezzari.torres.lucas.core.interfaces.IAppDispatcher
+import mezzari.torres.lucas.core.interfaces.AppDispatcher
 import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
 
@@ -10,8 +10,8 @@ import kotlin.coroutines.CoroutineContext
  * @since 01/09/2022
  */
 val coreModule = module {
-    single<IAppDispatcher> {
-        object : IAppDispatcher {
+    single<AppDispatcher> {
+        object : AppDispatcher {
             override var main: CoroutineContext = Dispatchers.Main
             override var io: CoroutineContext = Dispatchers.IO
         }

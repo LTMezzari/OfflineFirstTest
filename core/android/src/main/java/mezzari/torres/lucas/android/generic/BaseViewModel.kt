@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.commons.generic
+package mezzari.torres.lucas.android.generic
 
 import androidx.lifecycle.ViewModel
 

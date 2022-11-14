@@ -49,6 +49,10 @@ dependencies {
     // Work Manager
     implementation libraries.work_manager
 
+    // Navigation
+    implementation libraries.navigation_fragment
+    implementation libraries.navigation_ui
+
     //Project
     implementation project(":core")
     implementation project(":core:database")

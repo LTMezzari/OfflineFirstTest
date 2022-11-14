@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.user_repositories.service
+package mezzari.torres.lucas.user_repositories.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -6,10 +6,10 @@ import mezzari.torres.lucas.core.model.Repository
 import mezzari.torres.lucas.core.model.User
 import mezzari.torres.lucas.core.resource.Resource
 import mezzari.torres.lucas.core.resource.bound.DataBoundResource
-import mezzari.torres.lucas.database.repositories.cache.ICacheRepository
-import mezzari.torres.lucas.database.repositories.repository.IRepositoriesRepository
-import mezzari.torres.lucas.database.repositories.user.IUserRepository
-import mezzari.torres.lucas.network.IGithubAPI
+import mezzari.torres.lucas.database.store.cache.CacheStore
+import mezzari.torres.lucas.database.store.repository.RepositoriesStore
+import mezzari.torres.lucas.database.store.user.UserStore
+import mezzari.torres.lucas.network.GithubAPI
 import mezzari.torres.lucas.network.strategies.CacheStrategy
 import mezzari.torres.lucas.network.strategies.OnlineStrategy
 
@@ -17,18 +17,18 @@ import mezzari.torres.lucas.network.strategies.OnlineStrategy
  * @author Lucas T. Mezzari
  * @since 30/08/2022
  */
-class GithubService(
-    private val api: IGithubAPI,
-    private val userRepository: IUserRepository,
-    private val repositoriesRepository: IRepositoriesRepository,
-    private val cacheRepository: ICacheRepository,
-) : IGithubService {
+class GithubRepositoryImpl(
+    private val api: GithubAPI,
+    private val userRepository: UserStore,
+    private val repositoriesRepository: RepositoriesStore,
+    private val cacheRepository: CacheStore,
+) : GithubRepository {
     override fun getUser(userId: String): Flow<Resource<User>> {
         return flow {
             DataBoundResource(
                 this,
                 CacheStrategy(
-                    "${this@GithubService::class.java.simpleName}:getUser:$userId",
+                    "${this@GithubRepositoryImpl::class.java.simpleName}:getUser:$userId",
                     cacheRepository,
                     api.getUser(userId),
                     singleEmit = true
@@ -42,7 +42,7 @@ class GithubService(
             DataBoundResource(
                 this,
                 CacheStrategy<List<Repository>>(
-                    "${this@GithubService::class.java.simpleName}:getRepositories:$userId",
+                    "${this@GithubRepositoryImpl::class.java.simpleName}:getRepositories:$userId",
                     cacheRepository,
                     api.getUserRepositories(userId),
                     strict = false

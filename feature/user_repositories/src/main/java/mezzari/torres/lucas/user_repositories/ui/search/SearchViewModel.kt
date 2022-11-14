@@ -2,25 +2,25 @@ package mezzari.torres.lucas.user_repositories.ui.search
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
-import mezzari.torres.lucas.android.persistence.preferences.IPreferencesManager
-import mezzari.torres.lucas.android.persistence.session.ISessionManager
-import mezzari.torres.lucas.commons.generic.BaseViewModel
+import mezzari.torres.lucas.android.persistence.preferences.PreferencesManager
+import mezzari.torres.lucas.android.persistence.session.SessionManager
+import mezzari.torres.lucas.android.generic.BaseViewModel
 import mezzari.torres.lucas.core.archive.elvis
 import mezzari.torres.lucas.core.archive.guard
-import mezzari.torres.lucas.core.interfaces.IAppDispatcher
+import mezzari.torres.lucas.core.interfaces.AppDispatcher
 import mezzari.torres.lucas.core.model.User
 import mezzari.torres.lucas.core.resource.Resource
-import mezzari.torres.lucas.user_repositories.service.IGithubService
+import mezzari.torres.lucas.user_repositories.repository.GithubRepository
 
 /**
  * @author Lucas T. Mezzari
  * @since 30/08/2022
  */
 class SearchViewModel(
-    private val dispatcher: IAppDispatcher,
-    private val service: IGithubService,
-    private val session: ISessionManager,
-    private val preferences: IPreferencesManager,
+    private val dispatcher: AppDispatcher,
+    private val service: GithubRepository,
+    private val session: SessionManager,
+    private val preferences: PreferencesManager,
 ) : BaseViewModel() {
     val search: MutableLiveData<String> = MutableLiveData()
 

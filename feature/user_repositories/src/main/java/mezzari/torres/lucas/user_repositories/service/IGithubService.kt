@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.network.service
+package mezzari.torres.lucas.user_repositories.service
 
 import kotlinx.coroutines.flow.Flow
 import mezzari.torres.lucas.core.model.Repository

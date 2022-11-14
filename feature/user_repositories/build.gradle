@@ -41,6 +41,7 @@ dependencies {
     implementation libraries.swipe_refresh
 
     //Test
+    testImplementation libraries.test_core
     testImplementation libraries.junit_core
     androidTestImplementation libraries.junit_android
     androidTestImplementation libraries.espresso_core

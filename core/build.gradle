@@ -17,4 +17,7 @@ dependencies {
 
     //Retrofit
     implementation libraries.retrofit_gson
+
+    //Tests
+    implementation libraries.junit_core
 }

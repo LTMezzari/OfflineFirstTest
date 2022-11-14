@@ -10,8 +10,8 @@ import mezzari.torres.lucas.core.resource.Resource
 class DataBoundResource<T> private constructor(
     private val collector: FlowCollector<Resource<T>>,
     private val strategy: Strategy<T>,
-) {
-    private suspend inline fun execute() {
+) : IBoundResource<T> {
+    override suspend fun execute() {
         strategy.execute(collector)
     }
 

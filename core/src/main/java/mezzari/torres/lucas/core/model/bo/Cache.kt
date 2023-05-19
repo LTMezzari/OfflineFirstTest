@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.core.model
+package mezzari.torres.lucas.core.model.bo
 
 /**
  * @author Lucas T. Mezzari

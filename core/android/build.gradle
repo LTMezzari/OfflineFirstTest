@@ -32,6 +32,7 @@ android {
 dependencies {
     //Android
     implementation libraries.android_core
+    implementation libraries.material
 
     //Test
     testImplementation libraries.junit_core

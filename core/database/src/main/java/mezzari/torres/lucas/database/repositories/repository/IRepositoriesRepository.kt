@@ -1,6 +1,6 @@
 package mezzari.torres.lucas.database.repositories.repository
 
-import mezzari.torres.lucas.core.model.Repository
+import mezzari.torres.lucas.core.model.bo.Repository
 
 /**
  * @author Lucas T. Mezzari

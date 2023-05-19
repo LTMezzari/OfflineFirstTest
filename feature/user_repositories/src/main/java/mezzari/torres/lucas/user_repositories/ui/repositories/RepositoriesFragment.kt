@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import mezzari.torres.lucas.android.widgets.recycler.manager.LinearLayoutPaginatedManager
 import mezzari.torres.lucas.commons.generic.BaseFragment
 import mezzari.torres.lucas.user_repositories.R
 import mezzari.torres.lucas.user_repositories.adapter.RepositoriesAdapter
@@ -44,15 +44,23 @@ class RepositoriesFragment : BaseFragment() {
                 binding.srlRepositories.isRefreshing = false
                 return@setOnRefreshListener
             }
-            viewModel.getRepositories()
+            viewModel.getRepositories(0)
         }
 
         binding.rvRepositories.apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            layoutManager = LinearLayoutPaginatedManager(this, RecyclerView.VERTICAL, false).apply {
+                onEndReachedListener = listener@{
+                    if (viewModel.shouldLoadMore.value == false)
+                        return@listener
+                    val page = viewModel.page.value ?: 0
+                    viewModel.isLoadingMore.value = true
+                    viewModel.getRepositories(page + 1)
+                }
+            }
             adapter = this@RepositoriesFragment.adapter
         }
 
-        viewModel.repositories.observe(viewLifecycleOwner) {
+        viewModel.paginatedList.observe(viewLifecycleOwner) {
             adapter.items = it ?: arrayListOf()
             binding.srlRepositories.isRefreshing = false
         }
@@ -72,6 +80,6 @@ class RepositoriesFragment : BaseFragment() {
             Toast.makeText(requireContext(), R.string.message_outdated, Toast.LENGTH_LONG).show()
         }
 
-        viewModel.getRepositories()
+        viewModel.getRepositories(0)
     }
 }

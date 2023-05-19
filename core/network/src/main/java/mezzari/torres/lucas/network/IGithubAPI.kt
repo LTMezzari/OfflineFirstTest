@@ -2,11 +2,12 @@ package mezzari.torres.lucas.network
 
 import kotlinx.coroutines.Deferred
 import mezzari.torres.lucas.network.annotation.Route
-import mezzari.torres.lucas.core.model.Repository
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.Repository
+import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.network.wrapper.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * @author Lucas T. Mezzari
@@ -18,6 +19,13 @@ interface IGithubAPI {
     fun getUser(
         @Path("userId") userId: String
     ): Deferred<Response<User>>
+
+    @GET("users/{userId}/repos")
+    fun getUserRepositories(
+        @Path("userId") userId: String,
+        @Query("per_page") size: Int,
+        @Query("page") page: Int
+    ): Deferred<Response<List<Repository>>>
 
     @GET("users/{userId}/repos")
     fun getUserRepositories(

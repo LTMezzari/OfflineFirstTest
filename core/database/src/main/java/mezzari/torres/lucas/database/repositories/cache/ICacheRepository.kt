@@ -1,6 +1,6 @@
 package mezzari.torres.lucas.database.repositories.cache
 
-import mezzari.torres.lucas.core.model.Cache
+import mezzari.torres.lucas.core.model.bo.Cache
 
 /**
  * @author Lucas T. Mezzari

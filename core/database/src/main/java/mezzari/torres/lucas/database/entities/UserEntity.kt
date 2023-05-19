@@ -2,7 +2,7 @@ package mezzari.torres.lucas.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.User
 
 /**
  * @author Lucas T. Mezzari

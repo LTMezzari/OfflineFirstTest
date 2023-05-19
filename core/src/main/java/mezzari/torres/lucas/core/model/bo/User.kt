@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.core.model
+package mezzari.torres.lucas.core.model.bo
 
 import com.google.gson.annotations.SerializedName
 

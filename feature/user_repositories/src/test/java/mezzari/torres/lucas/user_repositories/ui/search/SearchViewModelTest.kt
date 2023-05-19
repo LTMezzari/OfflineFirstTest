@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.flow
 import mezzari.torres.lucas.android.persistence.preferences.IPreferencesManager
 import mezzari.torres.lucas.android.persistence.session.ISessionManager
 import mezzari.torres.lucas.core.interfaces.IAppDispatcher
-import mezzari.torres.lucas.core.model.Repository
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.Repository
+import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.core.resource.Resource
 import mezzari.torres.lucas.user_repositories.service.IGithubService
 import org.junit.Assert.*
@@ -62,7 +62,7 @@ class SearchViewModelTest {
                 }
             }
 
-            override fun getRepositories(userId: String): Flow<Resource<List<Repository>>> {
+            override fun getRepositories(userId: String, page: Int): Flow<Resource<List<Repository>>> {
                 throw Exception("Unimplemented")
             }
 

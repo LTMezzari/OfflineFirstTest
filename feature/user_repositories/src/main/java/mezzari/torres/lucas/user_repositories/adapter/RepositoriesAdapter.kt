@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import mezzari.torres.lucas.core.model.Repository
+import mezzari.torres.lucas.android.widgets.recycler.adapter.PaginatedAdapter
+import mezzari.torres.lucas.core.model.ObservableList
+import mezzari.torres.lucas.core.model.bo.Repository
 import mezzari.torres.lucas.user_repositories.R
 import mezzari.torres.lucas.user_repositories.databinding.RowRepositoryBinding
 
@@ -15,18 +17,17 @@ import mezzari.torres.lucas.user_repositories.databinding.RowRepositoryBinding
  * @author Lucas T. Mezzari
  * @since 31/08/2022
  */
-class RepositoriesAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RepositoriesAdapter(context: Context) : PaginatedAdapter<Repository, RecyclerView.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    private var _items: ArrayList<Repository> = ArrayList()
     var items: List<Repository>
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
-            _items = ArrayList(value)
+            observableList = ObservableList(value)
             notifyDataSetChanged()
         }
-        get() = _items
+        get() = observableList
 
     var isLoading: Boolean = true
         @SuppressLint("NotifyDataSetChanged")
@@ -54,10 +55,10 @@ class RepositoriesAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.
     }
 
     override fun getItemCount(): Int {
-        return if (isLoading || _items.isEmpty()) {
+        return if (isLoading || observableList.isEmpty()) {
             1
         } else {
-            _items.size
+            observableList.size
         }
     }
 
@@ -66,7 +67,7 @@ class RepositoriesAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.
             isLoading -> {
                 VIEW_TYPE_LOADING
             }
-            _items.isEmpty() -> {
+            observableList.isEmpty() -> {
                 VIEW_TYPE_EMPTY
             }
             else -> {
@@ -79,7 +80,7 @@ class RepositoriesAdapter(context: Context) : RecyclerView.Adapter<RecyclerView.
         when (getItemViewType(position)) {
             VIEW_TYPE_ITEM -> {
                 (holder as RepositoriesViewHolder).also {
-                    val repository = _items[position]
+                    val repository = observableList[position]
                     it.binding.tvRepositoryName.text = repository.name
                     it.binding.tvRepositoryDescription.text = repository.description
                     it.binding.tvRepositoryLanguage.text = repository.language

@@ -3,7 +3,7 @@ package mezzari.torres.lucas.network.strategies
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Deferred
-import mezzari.torres.lucas.core.model.Cache
+import mezzari.torres.lucas.core.model.bo.Cache
 import mezzari.torres.lucas.database.repositories.cache.ICacheRepository
 import mezzari.torres.lucas.network.wrapper.Response
 import java.lang.reflect.Type

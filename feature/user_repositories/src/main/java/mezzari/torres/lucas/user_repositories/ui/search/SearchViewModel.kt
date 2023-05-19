@@ -8,7 +8,7 @@ import mezzari.torres.lucas.commons.generic.BaseViewModel
 import mezzari.torres.lucas.core.archive.elvis
 import mezzari.torres.lucas.core.archive.guard
 import mezzari.torres.lucas.core.interfaces.IAppDispatcher
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.core.resource.Resource
 import mezzari.torres.lucas.user_repositories.service.IGithubService
 

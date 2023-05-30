@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.commons.generic
+package mezzari.torres.lucas.android.generic
 
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController

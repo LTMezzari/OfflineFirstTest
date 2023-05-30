@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.database.repositories.cache
+package mezzari.torres.lucas.database.store.cache
 
 import mezzari.torres.lucas.core.model.bo.Cache
 
@@ -6,7 +6,7 @@ import mezzari.torres.lucas.core.model.bo.Cache
  * @author Lucas T. Mezzari
  * @since 02/09/2022
  */
-interface ICacheRepository {
+interface CacheStore {
     suspend fun getCache(cacheId: String): Cache?
     suspend fun saveCache(vararg caches: Cache)
 }

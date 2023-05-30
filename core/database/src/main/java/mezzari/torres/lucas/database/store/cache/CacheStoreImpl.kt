@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.database.repositories.cache
+package mezzari.torres.lucas.database.store.cache
 
 import mezzari.torres.lucas.core.model.bo.Cache
 import mezzari.torres.lucas.database.dao.CacheDao
@@ -9,7 +9,7 @@ import mezzari.torres.lucas.database.entities.asEntry
  * @author Lucas T. Mezzari
  * @since 02/09/2022
  */
-class CacheRepository(private val dao: CacheDao): ICacheRepository {
+class CacheStoreImpl(private val dao: CacheDao): CacheStore {
     override suspend fun getCache(cacheId: String): Cache? {
         val cache = dao.getCache(cacheId) ?: return null
         if (cache.isEmpty())

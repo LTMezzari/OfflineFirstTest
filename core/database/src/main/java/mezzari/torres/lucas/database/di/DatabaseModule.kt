@@ -3,12 +3,12 @@ package mezzari.torres.lucas.database.di
 import android.app.Application
 import androidx.room.Room
 import mezzari.torres.lucas.database.AppDatabase
-import mezzari.torres.lucas.database.repositories.cache.CacheRepository
-import mezzari.torres.lucas.database.repositories.cache.ICacheRepository
-import mezzari.torres.lucas.database.repositories.repository.IRepositoriesRepository
-import mezzari.torres.lucas.database.repositories.repository.RepositoriesRepository
-import mezzari.torres.lucas.database.repositories.user.IUserRepository
-import mezzari.torres.lucas.database.repositories.user.UserRepository
+import mezzari.torres.lucas.database.store.cache.CacheStoreImpl
+import mezzari.torres.lucas.database.store.cache.CacheStore
+import mezzari.torres.lucas.database.store.repository.RepositoriesStore
+import mezzari.torres.lucas.database.store.repository.RepositoriesStoreImpl
+import mezzari.torres.lucas.database.store.user.UserStore
+import mezzari.torres.lucas.database.store.user.UserStoreImpl
 import org.koin.dsl.module
 
 /**
@@ -36,13 +36,13 @@ fun getDatabaseModule(application: Application) = module {
         dataBase.getCacheDao()
     }
 
-    single<IUserRepository> {
-        UserRepository(get())
+    single<UserStore> {
+        UserStoreImpl(get())
     }
-    single<IRepositoriesRepository> {
-        RepositoriesRepository(get())
+    single<RepositoriesStore> {
+        RepositoriesStoreImpl(get())
     }
-    single<ICacheRepository> {
-        CacheRepository(get())
+    single<CacheStore> {
+        CacheStoreImpl(get())
     }
 }

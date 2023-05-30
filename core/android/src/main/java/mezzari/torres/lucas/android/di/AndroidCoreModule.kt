@@ -2,10 +2,10 @@ package mezzari.torres.lucas.android.di
 
 import android.content.Context
 import androidx.work.WorkManager
-import mezzari.torres.lucas.android.persistence.preferences.IPreferencesManager
 import mezzari.torres.lucas.android.persistence.preferences.PreferencesManager
-import mezzari.torres.lucas.android.persistence.session.ISessionManager
+import mezzari.torres.lucas.android.persistence.preferences.PreferencesManagerImpl
 import mezzari.torres.lucas.android.persistence.session.SessionManager
+import mezzari.torres.lucas.android.persistence.session.SessionManagerImpl
 import mezzari.torres.lucas.android.synchronization.DataSynchronizationManager
 import mezzari.torres.lucas.android.synchronization.SynchronizationManager
 import org.koin.androidx.workmanager.dsl.worker
@@ -19,8 +19,8 @@ import org.koin.dsl.module
 fun getAndroidModule(context: Context): Module {
     return module {
         //Persistence
-        single<IPreferencesManager> { PreferencesManager(context) }
-        single<ISessionManager> { SessionManager(get()) }
+        single<PreferencesManager> { PreferencesManagerImpl(context) }
+        single<SessionManager> { SessionManagerImpl(get()) }
 
         //Synchronize
         single { WorkManager.getInstance(context) }

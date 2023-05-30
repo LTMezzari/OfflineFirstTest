@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Deferred
 import mezzari.torres.lucas.core.model.bo.Cache
-import mezzari.torres.lucas.database.repositories.cache.ICacheRepository
+import mezzari.torres.lucas.database.store.cache.CacheStore
 import mezzari.torres.lucas.network.wrapper.Response
 import java.lang.reflect.Type
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type
  */
 class CacheStrategy<T> constructor(
     private val callId: String,
-    private val repository: ICacheRepository,
+    private val repository: CacheStore,
     call: Deferred<Response<T>>,
     strict: Boolean = true,
     singleEmit: Boolean = false,
@@ -45,7 +45,7 @@ class CacheStrategy<T> constructor(
     companion object {
         inline operator fun <reified T> invoke(
             callId: String,
-            repository: ICacheRepository,
+            repository: CacheStore,
             call: Deferred<Response<T>>,
             strict: Boolean = true,
             singleEmit: Boolean = false

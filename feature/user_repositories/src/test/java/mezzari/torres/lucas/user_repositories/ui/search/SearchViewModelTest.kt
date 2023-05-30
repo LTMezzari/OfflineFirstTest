@@ -4,13 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import mezzari.torres.lucas.android.persistence.preferences.IPreferencesManager
-import mezzari.torres.lucas.android.persistence.session.ISessionManager
-import mezzari.torres.lucas.core.interfaces.IAppDispatcher
+import mezzari.torres.lucas.android.persistence.preferences.PreferencesManager
+import mezzari.torres.lucas.android.persistence.session.SessionManager
+import mezzari.torres.lucas.core.interfaces.AppDispatcher
 import mezzari.torres.lucas.core.model.bo.Repository
 import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.core.resource.Resource
-import mezzari.torres.lucas.user_repositories.service.IGithubService
+import mezzari.torres.lucas.user_repositories.repository.GithubRepository
 import org.junit.Assert.*
 
 import org.junit.Before
@@ -28,10 +28,10 @@ class SearchViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var sub: SearchViewModel
-    private lateinit var dispatcher: IAppDispatcher
-    private lateinit var service: IGithubService
-    private lateinit var preferences: IPreferencesManager
-    private lateinit var session: ISessionManager
+    private lateinit var dispatcher: AppDispatcher
+    private lateinit var service: GithubRepository
+    private lateinit var preferences: PreferencesManager
+    private lateinit var session: SessionManager
 
     private var sessionUser: User? = null
     private var preferencesUser: User? = null
@@ -50,11 +50,11 @@ class SearchViewModelTest {
         requestGetUserListener = null
 
         dispatcher =
-            object : IAppDispatcher {
+            object : AppDispatcher {
                 override var main: CoroutineContext = Dispatchers.Unconfined
                 override var io: CoroutineContext = Dispatchers.Unconfined
             }
-        service = object : IGithubService {
+        service = object : GithubRepository {
             override fun getUser(userId: String): Flow<Resource<User>> {
                 return flow {
                     requestGetUserListener?.invoke(userId)
@@ -70,10 +70,10 @@ class SearchViewModelTest {
                 throw Exception("Unimplemented")
             }
         }
-        preferences = object : IPreferencesManager {
+        preferences = object : PreferencesManager {
             override var user: User? by this@SearchViewModelTest::preferencesUser
         }
-        session = object : ISessionManager {
+        session = object : SessionManager {
             override var user: User? by this@SearchViewModelTest::sessionUser
         }
 

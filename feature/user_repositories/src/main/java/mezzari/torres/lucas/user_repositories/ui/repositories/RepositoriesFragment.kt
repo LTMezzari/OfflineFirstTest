@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import mezzari.torres.lucas.android.generic.BaseFragment
 import mezzari.torres.lucas.android.widgets.recycler.manager.LinearLayoutPaginatedManager
-import mezzari.torres.lucas.commons.generic.BaseFragment
 import mezzari.torres.lucas.core.model.ObservableList
 import mezzari.torres.lucas.user_repositories.R
 import mezzari.torres.lucas.user_repositories.adapter.RepositoriesAdapter

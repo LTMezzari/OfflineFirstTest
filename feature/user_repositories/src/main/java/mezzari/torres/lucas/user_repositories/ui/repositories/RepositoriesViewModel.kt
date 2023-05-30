@@ -6,13 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import mezzari.torres.lucas.android.generic.BaseViewModel
 import mezzari.torres.lucas.android.persistence.session.SessionManager
-import mezzari.torres.lucas.commons.generic.BaseViewModel
-import mezzari.torres.lucas.core.archive.elvis
-import mezzari.torres.lucas.core.archive.guard
 import mezzari.torres.lucas.core.interfaces.AppDispatcher
-import mezzari.torres.lucas.core.model.Repository
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.ObservableList
+import mezzari.torres.lucas.core.model.bo.Repository
+import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.user_repositories.repository.GithubRepository
 import mezzari.torres.lucas.core.resource.OutdatedResource
 import mezzari.torres.lucas.core.resource.Resource

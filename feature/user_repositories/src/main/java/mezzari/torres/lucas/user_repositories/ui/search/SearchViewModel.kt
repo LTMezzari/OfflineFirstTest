@@ -8,7 +8,7 @@ import mezzari.torres.lucas.android.generic.BaseViewModel
 import mezzari.torres.lucas.core.archive.elvis
 import mezzari.torres.lucas.core.archive.guard
 import mezzari.torres.lucas.core.interfaces.AppDispatcher
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.core.resource.Resource
 import mezzari.torres.lucas.user_repositories.repository.GithubRepository
 

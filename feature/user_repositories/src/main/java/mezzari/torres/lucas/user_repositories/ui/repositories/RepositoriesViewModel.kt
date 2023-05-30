@@ -1,17 +1,17 @@
 package mezzari.torres.lucas.user_repositories.ui.repositories
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import mezzari.torres.lucas.android.persistence.session.SessionManager
 import mezzari.torres.lucas.android.generic.BaseViewModel
-import mezzari.torres.lucas.core.archive.elvis
-import mezzari.torres.lucas.core.archive.guard
+import mezzari.torres.lucas.android.persistence.session.SessionManager
 import mezzari.torres.lucas.core.interfaces.AppDispatcher
-import mezzari.torres.lucas.core.model.Repository
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.ObservableList
+import mezzari.torres.lucas.core.model.bo.Repository
+import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.user_repositories.repository.GithubRepository
 import mezzari.torres.lucas.core.resource.OutdatedResource
 import mezzari.torres.lucas.core.resource.Resource
@@ -25,6 +25,13 @@ class RepositoriesViewModel(
     private val service: GithubRepository,
     private val session: SessionManager,
 ) : BaseViewModel() {
+    private val user: User? get() = session.user
+    private var hasNewData: Boolean = false
+
+    val page: MutableLiveData<Int> = MutableLiveData(0)
+    val isLoadingMore: MutableLiveData<Boolean> = MutableLiveData(false)
+    val shouldLoadMore: MutableLiveData<Boolean> = MutableLiveData(false)
+
     private val repositoriesResource: MutableLiveData<Resource<List<Repository>>> =
         MutableLiveData()
     val isLoading: LiveData<Boolean> = Transformations.map(repositoriesResource) {
@@ -33,7 +40,7 @@ class RepositoriesViewModel(
     val error: LiveData<String> = Transformations.map(repositoriesResource) {
         return@map if (it.status == Resource.Status.FAILURE) it.message else null
     }
-    val repositories: LiveData<List<Repository>> = Transformations.map(repositoriesResource) {
+    private val repositories: LiveData<List<Repository>> = Transformations.map(repositoriesResource) {
         return@map it.data
     }
     val isOutdated: LiveData<Boolean> = Transformations.map(repositoriesResource) {
@@ -41,25 +48,34 @@ class RepositoriesViewModel(
         return@map it is OutdatedResource
     }
 
-    private val user: User? get() = session.user
-    private var hasNewData: Boolean = false
-
-    fun getRepositories() {
-        val userId = user?.username ?: return
-        viewModelScope.launch(dispatcher.io) {
-            service.getRepositories(userId).collect {
-                repositoriesResource.postValue(it)
+    val paginatedList: MediatorLiveData<ObservableList<Repository>> = MediatorLiveData<ObservableList<Repository>>().apply {
+        addSource(repositories) {
+            if (it == null) {
+                shouldLoadMore.value = false
+                isLoadingMore.value = false
+                return@addSource
             }
+            val list = value ?: return@addSource
+            val isLoadingMore = isLoadingMore.value ?: false
+            shouldLoadMore.value = it.size >= 10
+            if (isLoadingMore) {
+                list.addAll(it)
+                this@RepositoriesViewModel.isLoadingMore.postValue(false)
+                return@addSource
+            }
+            list.clear()
+            list.addAll(it)
         }
+        postValue(ObservableList())
     }
 
-    fun getNewRepositories(): List<Repository> {
-        val (resource: Resource<List<Repository>>) = guard(repositoriesResource.value) elvis { return arrayListOf() }
-        return if (resource is OutdatedResource && hasNewData) {
-            hasNewData = false
-            resource.newData ?: arrayListOf()
-        } else {
-            arrayListOf()
+    fun getRepositories(page: Int) {
+        this@RepositoriesViewModel.page.postValue(page)
+        val userId = user?.username ?: return
+        viewModelScope.launch(dispatcher.io) {
+            service.getRepositories(userId, page).collect {
+                repositoriesResource.postValue(it)
+            }
         }
     }
 }

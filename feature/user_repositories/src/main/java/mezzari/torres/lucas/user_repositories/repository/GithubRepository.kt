@@ -1,8 +1,8 @@
 package mezzari.torres.lucas.user_repositories.repository
 
 import kotlinx.coroutines.flow.Flow
-import mezzari.torres.lucas.core.model.Repository
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.Repository
+import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.core.resource.Resource
 
 /**
@@ -12,7 +12,7 @@ import mezzari.torres.lucas.core.resource.Resource
 interface GithubRepository {
     fun getUser(userId: String): Flow<Resource<User>>
     
-    fun getRepositories(userId: String): Flow<Resource<List<Repository>>>
+    fun getRepositories(userId: String, page: Int): Flow<Resource<List<Repository>>>
 
     fun syncRepositories(userId: String): Flow<Resource<List<Repository>>>
 }

@@ -2,8 +2,8 @@ package mezzari.torres.lucas.user_repositories.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import mezzari.torres.lucas.core.model.Repository
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.Repository
+import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.core.resource.Resource
 import mezzari.torres.lucas.core.resource.bound.DataBoundResource
 import mezzari.torres.lucas.database.store.cache.CacheStore
@@ -37,15 +37,16 @@ class GithubRepositoryImpl(
         }
     }
 
-    override fun getRepositories(userId: String): Flow<Resource<List<Repository>>> {
+    override fun getRepositories(userId: String, page: Int): Flow<Resource<List<Repository>>> {
         return flow {
             DataBoundResource(
                 this,
                 CacheStrategy<List<Repository>>(
-                    "${this@GithubRepositoryImpl::class.java.simpleName}:getRepositories:$userId",
+                    "${this@GithubRepositoryImpl::class.java.simpleName}:getRepositories:$userId,$page",
                     cacheRepository,
-                    api.getUserRepositories(userId),
-                    strict = false
+                    api.getUserRepositories(userId, page, 10),
+                    strict = true,
+                    singleEmit = true
                 )
             )
         }

@@ -2,7 +2,7 @@ package mezzari.torres.lucas.android.persistence.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.User
 
 /**
  * @author Lucas T. Mezzari

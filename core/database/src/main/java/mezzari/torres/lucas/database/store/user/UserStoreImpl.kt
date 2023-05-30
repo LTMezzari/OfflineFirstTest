@@ -1,6 +1,6 @@
 package mezzari.torres.lucas.database.store.user
 
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.database.dao.UserDao
 import mezzari.torres.lucas.database.entities.asEntity
 import mezzari.torres.lucas.database.entities.asEntry

@@ -1,7 +1,7 @@
 package mezzari.torres.lucas.android.persistence.session
 
 import mezzari.torres.lucas.android.persistence.preferences.PreferencesManager
-import mezzari.torres.lucas.core.model.User
+import mezzari.torres.lucas.core.model.bo.User
 
 /**
  * @author Lucas T. Mezzari

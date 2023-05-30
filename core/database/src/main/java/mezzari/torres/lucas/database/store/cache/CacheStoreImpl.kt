@@ -1,6 +1,6 @@
 package mezzari.torres.lucas.database.store.cache
 
-import mezzari.torres.lucas.core.model.Cache
+import mezzari.torres.lucas.core.model.bo.Cache
 import mezzari.torres.lucas.database.dao.CacheDao
 import mezzari.torres.lucas.database.entities.asEntity
 import mezzari.torres.lucas.database.entities.asEntry

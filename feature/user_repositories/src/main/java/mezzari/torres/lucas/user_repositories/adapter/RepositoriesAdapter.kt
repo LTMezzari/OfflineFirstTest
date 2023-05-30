@@ -21,12 +21,7 @@ class RepositoriesAdapter(context: Context) : PaginatedAdapter<Repository, Recyc
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    var items: List<Repository>
-        @SuppressLint("NotifyDataSetChanged")
-        set(value) {
-            observableList = ObservableList(value)
-            notifyDataSetChanged()
-        }
+    val items: List<Repository>
         get() = observableList
 
     var isLoading: Boolean = true

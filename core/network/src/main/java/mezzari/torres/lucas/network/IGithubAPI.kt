@@ -23,8 +23,8 @@ interface IGithubAPI {
     @GET("users/{userId}/repos")
     fun getUserRepositories(
         @Path("userId") userId: String,
-        @Query("per_page") size: Int,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("per_page") size: Int
     ): Deferred<Response<List<Repository>>>
 
     @GET("users/{userId}/repos")

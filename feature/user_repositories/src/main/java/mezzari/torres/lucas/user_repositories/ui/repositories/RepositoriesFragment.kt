@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import mezzari.torres.lucas.android.widgets.recycler.manager.LinearLayoutPaginatedManager
 import mezzari.torres.lucas.commons.generic.BaseFragment
+import mezzari.torres.lucas.core.model.ObservableList
 import mezzari.torres.lucas.user_repositories.R
 import mezzari.torres.lucas.user_repositories.adapter.RepositoriesAdapter
 import mezzari.torres.lucas.user_repositories.databinding.FragmentRepositoriesBinding
@@ -38,35 +39,36 @@ class RepositoriesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.srlRepositories.setOnRefreshListener {
-            val newRepositories = viewModel.getNewRepositories()
-            if (newRepositories.isNotEmpty()) {
-                adapter.items = newRepositories
-                binding.srlRepositories.isRefreshing = false
-                return@setOnRefreshListener
-            }
+            viewModel.isLoadingMore.value = false
             viewModel.getRepositories(0)
         }
 
         binding.rvRepositories.apply {
             layoutManager = LinearLayoutPaginatedManager(this, RecyclerView.VERTICAL, false).apply {
-                onEndReachedListener = listener@{
-                    if (viewModel.shouldLoadMore.value == false)
-                        return@listener
-                    val page = viewModel.page.value ?: 0
-                    viewModel.isLoadingMore.value = true
-                    viewModel.getRepositories(page + 1)
+                onPaginationListener = object: LinearLayoutPaginatedManager.OnPaginationListener {
+                    override fun onEndReached() {
+                        val page = viewModel.page.value ?: 0
+                        viewModel.isLoadingMore.value = true
+                        viewModel.getRepositories(page + 1)
+                    }
+
+                    override fun shouldPaginate(): Boolean {
+                        return viewModel.shouldLoadMore.value == true
+                                && viewModel.isLoading.value == false
+                    }
                 }
             }
             adapter = this@RepositoriesFragment.adapter
         }
 
         viewModel.paginatedList.observe(viewLifecycleOwner) {
-            adapter.items = it ?: arrayListOf()
-            binding.srlRepositories.isRefreshing = false
+            adapter.observableList = it ?: ObservableList()
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) {
             adapter.isLoading = it ?: false
+            if (it == false)
+                binding.srlRepositories.isRefreshing = false
         }
 
         viewModel.error.observe(viewLifecycleOwner) {

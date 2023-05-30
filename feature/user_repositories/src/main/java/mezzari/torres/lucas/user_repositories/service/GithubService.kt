@@ -42,10 +42,11 @@ class GithubService(
             DataBoundResource(
                 this,
                 CacheStrategy<List<Repository>>(
-                    "${this@GithubService::class.java.simpleName}:getRepositories:$userId",
+                    "${this@GithubService::class.java.simpleName}:getRepositories:$userId,$page",
                     cacheRepository,
                     api.getUserRepositories(userId, page, 10),
-                    strict = false
+                    strict = true,
+                    singleEmit = true
                 )
             )
         }

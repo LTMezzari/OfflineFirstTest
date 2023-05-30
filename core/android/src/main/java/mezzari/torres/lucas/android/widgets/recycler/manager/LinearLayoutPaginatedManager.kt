@@ -8,12 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
  * @since 18/05/2023
  */
 class LinearLayoutPaginatedManager(
-    recyclerView: RecyclerView,
+    private val recyclerView: RecyclerView,
     @RecyclerView.Orientation orientation: Int = RecyclerView.VERTICAL,
     reverseLayout: Boolean = false
 ) : LinearLayoutManager(recyclerView.context, orientation, reverseLayout) {
 
-    var adapter: RecyclerView.Adapter<*>? = null
+    private val adapter: RecyclerView.Adapter<*>?
+        get() = recyclerView.adapter
 
     var onPaginationListener: OnPaginationListener? = null
     var onEndReachedListener: (() -> Unit)? = null

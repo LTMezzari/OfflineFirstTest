@@ -8,8 +8,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import mezzari.torres.lucas.android.persistence.session.ISessionManager
 import mezzari.torres.lucas.commons.generic.BaseViewModel
-import mezzari.torres.lucas.core.archive.elvis
-import mezzari.torres.lucas.core.archive.guard
 import mezzari.torres.lucas.core.interfaces.IAppDispatcher
 import mezzari.torres.lucas.core.model.ObservableList
 import mezzari.torres.lucas.core.model.bo.Repository
@@ -27,6 +25,8 @@ class RepositoriesViewModel(
     private val service: IGithubService,
     private val session: ISessionManager,
 ) : BaseViewModel() {
+    private val user: User? get() = session.user
+    private var hasNewData: Boolean = false
 
     val page: MutableLiveData<Int> = MutableLiveData(0)
     val isLoadingMore: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -40,7 +40,7 @@ class RepositoriesViewModel(
     val error: LiveData<String> = Transformations.map(repositoriesResource) {
         return@map if (it.status == Resource.Status.FAILURE) it.message else null
     }
-    val repositories: LiveData<List<Repository>> = Transformations.map(repositoriesResource) {
+    private val repositories: LiveData<List<Repository>> = Transformations.map(repositoriesResource) {
         return@map it.data
     }
     val isOutdated: LiveData<Boolean> = Transformations.map(repositoriesResource) {
@@ -50,11 +50,16 @@ class RepositoriesViewModel(
 
     val paginatedList: MediatorLiveData<ObservableList<Repository>> = MediatorLiveData<ObservableList<Repository>>().apply {
         addSource(repositories) {
+            if (it == null) {
+                shouldLoadMore.value = false
+                isLoadingMore.value = false
+                return@addSource
+            }
             val list = value ?: return@addSource
             val isLoadingMore = isLoadingMore.value ?: false
+            shouldLoadMore.value = it.size >= 10
             if (isLoadingMore) {
                 list.addAll(it)
-                shouldLoadMore.value = list.size < 10
                 this@RepositoriesViewModel.isLoadingMore.postValue(false)
                 return@addSource
             }
@@ -64,9 +69,6 @@ class RepositoriesViewModel(
         postValue(ObservableList())
     }
 
-    private val user: User? get() = session.user
-    private var hasNewData: Boolean = false
-
     fun getRepositories(page: Int) {
         this@RepositoriesViewModel.page.postValue(page)
         val userId = user?.username ?: return
@@ -74,16 +76,6 @@ class RepositoriesViewModel(
             service.getRepositories(userId, page).collect {
                 repositoriesResource.postValue(it)
             }
-        }
-    }
-
-    fun getNewRepositories(): List<Repository> {
-        val (resource: Resource<List<Repository>>) = guard(repositoriesResource.value) elvis { return arrayListOf() }
-        return if (resource is OutdatedResource && hasNewData) {
-            hasNewData = false
-            resource.newData ?: arrayListOf()
-        } else {
-            arrayListOf()
         }
     }
 }

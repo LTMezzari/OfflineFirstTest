@@ -68,6 +68,7 @@ abstract class PaginatedAdapter<T, VH: RecyclerView.ViewHolder>: RecyclerView.Ad
         }
 
     init {
+        observableList.removeAllListeners()
         observableList.addListener(listener)
     }
 }

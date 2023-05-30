@@ -1,6 +1,5 @@
 package mezzari.torres.lucas.network.di
 
-import mezzari.torres.lucas.network.GithubAPI
 import mezzari.torres.lucas.network.module.DeferredCallModule
 import mezzari.torres.lucas.network.source.Network
 import mezzari.torres.lucas.network.source.module.client.LogModule
@@ -21,9 +20,5 @@ val networkModule = module {
             okHttpClientLevelModule = listOf(LogModule())
         )
         return@single Network
-    }
-    single<GithubAPI> {
-        val network: Network = get()
-        network.build(GithubAPI::class)
     }
 }

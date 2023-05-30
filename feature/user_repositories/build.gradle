@@ -58,6 +58,13 @@ dependencies {
     implementation libraries.koin_core
     implementation libraries.koin_navigation
 
+    // Retrofit
+    implementation libraries.retrofit
+    implementation libraries.retrofit_gson
+
+    // My Libraries
+    implementation libraries.kotlin_network
+
     //Project
     implementation project(":core")
     implementation project(":commons")

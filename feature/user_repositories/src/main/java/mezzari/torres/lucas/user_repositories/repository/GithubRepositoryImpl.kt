@@ -9,7 +9,7 @@ import mezzari.torres.lucas.core.resource.bound.DataBoundResource
 import mezzari.torres.lucas.database.store.cache.CacheStore
 import mezzari.torres.lucas.database.store.repository.RepositoriesStore
 import mezzari.torres.lucas.database.store.user.UserStore
-import mezzari.torres.lucas.network.GithubAPI
+import mezzari.torres.lucas.user_repositories.GithubAPI
 import mezzari.torres.lucas.network.strategies.CacheStrategy
 import mezzari.torres.lucas.network.strategies.OnlineStrategy
 

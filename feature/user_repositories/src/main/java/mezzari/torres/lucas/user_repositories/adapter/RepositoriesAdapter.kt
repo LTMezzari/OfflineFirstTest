@@ -50,19 +50,22 @@ class RepositoriesAdapter(context: Context) : PaginatedAdapter<Repository, Recyc
     }
 
     override fun getItemCount(): Int {
-        return if (isLoading || observableList.isEmpty()) {
+        var size = items.size
+        if (isLoading)
+            size++
+        return if (observableList.isEmpty()) {
             1
         } else {
-            observableList.size
+            size
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when {
-            isLoading -> {
+            isLoading && position >= items.size -> {
                 VIEW_TYPE_LOADING
             }
-            observableList.isEmpty() -> {
+            items.isEmpty() -> {
                 VIEW_TYPE_EMPTY
             }
             else -> {
@@ -75,7 +78,7 @@ class RepositoriesAdapter(context: Context) : PaginatedAdapter<Repository, Recyc
         when (getItemViewType(position)) {
             VIEW_TYPE_ITEM -> {
                 (holder as RepositoriesViewHolder).also {
-                    val repository = observableList[position]
+                    val repository = items[position]
                     it.binding.tvRepositoryName.text = repository.name
                     it.binding.tvRepositoryDescription.text = repository.description
                     it.binding.tvRepositoryLanguage.text = repository.language

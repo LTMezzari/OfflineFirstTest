@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.network
+package mezzari.torres.lucas.user_repositories
 
 import kotlinx.coroutines.Deferred
 import mezzari.torres.lucas.network.annotation.Route

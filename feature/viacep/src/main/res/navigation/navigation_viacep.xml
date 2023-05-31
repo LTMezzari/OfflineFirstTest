@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_viacep"
+    app:startDestination="@id/searchAddressFragment">
+
+    <fragment
+        android:id="@+id/searchAddressFragment"
+        android:name="mezzari.torres.lucas.viacep.ui.search.SearchAddressFragment"
+        android:label="fragment_search_address"
+        tools:layout="@layout/fragment_search_address" >
+        <action
+            android:id="@+id/action_searchAddressFragment_to_addressDetailFragment"
+            app:destination="@id/addressDetailFragment" />
+        <deepLink
+            app:uri="feature-viacep://mezzari.torres.lucas/search_address_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addressDetailFragment"
+        android:name="mezzari.torres.lucas.viacep.ui.details.AddressDetailFragment"
+        android:label="fragment_address_detail"
+        tools:layout="@layout/fragment_address_detail" >
+        <deepLink
+            app:uri="feature-viacep://mezzari.torres.lucas/addressDetailFragment" />
+    </fragment>
+</navigation>

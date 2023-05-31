@@ -3,6 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_main"
-    app:startDestination="@id/navigation_user_repositories">
+    app:startDestination="@id/splashFragment">
     <include app:graph="@navigation/navigation_user_repositories" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="mezzari.torres.lucas.offlinefirst.ui.splash.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_navigation_user_repositories"
+            app:destination="@id/navigation_user_repositories"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_navigation_viacep"
+            app:destination="@id/navigation_viacep"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <include app:graph="@navigation/navigation_viacep" />
 </navigation>

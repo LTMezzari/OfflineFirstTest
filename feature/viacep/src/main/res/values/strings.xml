@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_viacep">Address</string>
+    <string name="hint_zip_code">CEP</string>
+    <string name="action_search">Search</string>
+</resources>

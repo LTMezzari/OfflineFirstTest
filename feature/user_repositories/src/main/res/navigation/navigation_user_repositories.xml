@@ -13,10 +13,15 @@
         <action
             android:id="@+id/action_searchFragment_to_repositoriesFragment"
             app:destination="@id/repositoriesFragment" />
+        <deepLink
+            app:uri="feature-user-repositories://mezzari.torres.lucas/search_fragment" />
     </fragment>
     <fragment
         android:id="@+id/repositoriesFragment"
         android:name="mezzari.torres.lucas.user_repositories.ui.repositories.RepositoriesFragment"
         android:label="fragment_repositories"
-        tools:layout="@layout/fragment_repositories" />
+        tools:layout="@layout/fragment_repositories">
+        <deepLink
+            app:uri="feature-user-repositories://mezzari.torres.lucas/repositories_fragment" />
+    </fragment>
 </navigation>

@@ -42,7 +42,7 @@ dependencies {
 
     // Coroutines
     implementation libraries.coroutines_core
-    implementation libraries.coroutines
+    testImplementation libraries.coroutines_test
 
     // Koin
     implementation libraries.koin_core

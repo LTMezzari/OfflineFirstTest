@@ -11,7 +11,7 @@ import java.lang.Exception
  * @author Lucas T. Mezzari
  * @since 31/08/2022
  */
-abstract class AutomaticStrategy<T>(private val call: Deferred<Response<T>>) :
+abstract class AutomaticStrategy<T>(call: () -> Deferred<Response<T>>) :
     OfflineStrategy<T>(call, false, true) {
     override suspend fun execute(
         collector: FlowCollector<Resource<T>>
@@ -24,7 +24,7 @@ abstract class AutomaticStrategy<T>(private val call: Deferred<Response<T>>) :
             if (!shouldFetch(loadedData))
                 return
 
-            when (val result = call.await()) {
+            when (val result = call().await()) {
                 is Response.Success -> {
                     val fetchedData = result.data
                     collector.emit(Resource.success(fetchedData))

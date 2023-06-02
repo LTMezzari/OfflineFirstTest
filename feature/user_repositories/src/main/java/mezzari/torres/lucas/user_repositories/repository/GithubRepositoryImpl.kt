@@ -30,7 +30,7 @@ class GithubRepositoryImpl(
                 CacheStrategy(
                     "${this@GithubRepositoryImpl::class.java.simpleName}:getUser:$userId",
                     cacheRepository,
-                    api.getUser(userId),
+                    { api.getUser(userId) },
                     singleEmit = true
                 )
             )
@@ -44,7 +44,7 @@ class GithubRepositoryImpl(
                 CacheStrategy<List<Repository>>(
                     "${this@GithubRepositoryImpl::class.java.simpleName}:getRepositories:$userId,$page",
                     cacheRepository,
-                    api.getUserRepositories(userId, page, 10),
+                    { api.getUserRepositories(userId, page, 10) },
                     strict = true,
                     singleEmit = true
                 )
@@ -56,7 +56,7 @@ class GithubRepositoryImpl(
         return flow {
             DataBoundResource(
                 this,
-                OnlineStrategy(api.getUserRepositories(userId)) {
+                OnlineStrategy({ api.getUserRepositories(userId) }) {
                     val repositories = it ?: return@OnlineStrategy
                     repositoriesRepository.saveRepositories(repositories)
                 }

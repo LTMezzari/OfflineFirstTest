@@ -1,18 +1,22 @@
-package com.example.database.strategy
+package mezzari.torres.lucas.database.strategy
 
-import com.example.dietboxtest.core.resource.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import mezzari.torres.lucas.core.resource.Resource
 import org.junit.Assert.*
 
 import org.junit.Before
 import org.junit.Test
 
-class DatabaseStrategyTest {
+/**
+ * @author Lucas T. Mezzari
+ * @since 01/06/2023
+ */
+class DatabaseStrategyImplTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()
@@ -28,8 +32,10 @@ class DatabaseStrategyTest {
         Dispatchers.setMain(dispatcher)
         onLoad = null
         collector = FlowCollector { value -> onEmit?.invoke(value) }
-        sub = DatabaseStrategy.create {
-            return@create onLoad?.invoke()
+        sub = object: DatabaseStrategy<Any>() {
+            override suspend fun onLoadData(): Any? {
+                return onLoad?.invoke()
+            }
         }
     }
 
@@ -77,7 +83,7 @@ class DatabaseStrategyTest {
                 when (counter) {
                     1 -> assertEquals(Resource.Status.LOADING, it.status)
                     2 -> {
-                        assertEquals(Resource.Status.ERROR, it.status)
+                        assertEquals(Resource.Status.FAILURE, it.status)
                         assertEquals(error, it.message)
                     }
                     else -> assertTrue(false)

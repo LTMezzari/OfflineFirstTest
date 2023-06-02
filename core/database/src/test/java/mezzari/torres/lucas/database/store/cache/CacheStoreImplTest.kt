@@ -1,18 +1,22 @@
-package com.example.database.store
+package mezzari.torres.lucas.database.store.cache
 
-import com.example.database.dao.CacheDao
-import com.example.database.entity.CacheEntity
-import com.example.dietboxtest.core.model.Cache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import mezzari.torres.lucas.core.model.bo.Cache
+import mezzari.torres.lucas.database.dao.CacheDao
+import mezzari.torres.lucas.database.entities.CacheEntity
 import org.junit.Assert.*
 
 import org.junit.Before
 import org.junit.Test
 
+/**
+ * @author Lucas T. Mezzari
+ * @since 01/06/2023
+ */
 class CacheStoreImplTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -158,7 +162,7 @@ class CacheStoreImplTest {
                 requestCounter++
             }
 
-            val result: Boolean = sub.putCaches(*caches)
+            val result: Boolean = sub.saveCache(*caches)
 
             assertEquals(requestCounter, 1)
             assertTrue(result)
@@ -183,7 +187,7 @@ class CacheStoreImplTest {
                 requestCounter++
             }
 
-            val result: Boolean = sub.putCaches(*caches)
+            val result: Boolean = sub.saveCache(*caches)
 
             assertEquals(requestCounter, 1)
             assertTrue(result)
@@ -209,7 +213,7 @@ class CacheStoreImplTest {
                 requestCounter++
             }
 
-            val result: Boolean = sub.putCaches(*caches)
+            val result: Boolean = sub.saveCache(*caches)
 
             assertEquals(requestCounter, 1)
             assertTrue(result)
@@ -224,7 +228,7 @@ class CacheStoreImplTest {
                 assertTrue(false)
             }
 
-            val result: Boolean = sub.putCaches(*caches)
+            val result: Boolean = sub.saveCache(*caches)
 
             assertFalse(result)
         }
@@ -238,7 +242,7 @@ class CacheStoreImplTest {
                 assertTrue(false)
             }
 
-            val result: Boolean = sub.putCaches(*caches)
+            val result: Boolean = sub.saveCache(*caches)
 
             assertFalse(result)
         }

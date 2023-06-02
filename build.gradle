@@ -39,6 +39,7 @@ ext {
             //Coroutines
             coroutines_core    : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
             coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion",
+            coroutines_test    : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion",
 
             //Work Manager
             work_manager       : "androidx.work:work-runtime-ktx:$workVersion",

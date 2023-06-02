@@ -2,7 +2,6 @@ package mezzari.torres.lucas.network.strategies
 
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.FlowCollector
-import mezzari.torres.lucas.core.resource.bound.DataBoundResource
 import mezzari.torres.lucas.network.wrapper.OfflineResource
 import mezzari.torres.lucas.core.resource.OutdatedResource
 import mezzari.torres.lucas.core.resource.Resource
@@ -14,22 +13,29 @@ import java.lang.Exception
  * @since 31/08/2022
  */
 abstract class OfflineStrategy<T>(
-    private val call: Deferred<Response<T>>,
+    call: () -> Deferred<Response<T>>,
     private val strict: Boolean = true,
     private val singleEmit: Boolean = false,
-) : DataBoundResource.Strategy<T> {
+) : NetworkStrategy<T>(call) {
     override suspend fun execute(
         collector: FlowCollector<Resource<T>>,
     ) {
-        collector.emit(Resource.loading())
-        val loadedResource = fetchFromDatabase()
-        if (!singleEmit)
-            collector.emit(loadedResource)
+        try {
+            collector.emit(Resource.loading())
+            val loadedResource = fetchFromDatabase()
+            if (!singleEmit)
+                collector.emit(loadedResource)
 
-        if (!shouldFetch(loadedResource.data))
-            return
+            if (!shouldFetch(loadedResource.data)) {
+                if (singleEmit)
+                    collector.emit(loadedResource)
+                return
+            }
 
-        collector.emit(fetchFromNetwork(loadedResource))
+            collector.emit(fetchFromNetwork(loadedResource))
+        } catch (e: Exception) {
+            collector.emit(Resource.error(e.message))
+        }
     }
 
     abstract suspend fun onSaveData(data: T?)
@@ -38,16 +44,12 @@ abstract class OfflineStrategy<T>(
     open fun shouldFetch(loadedData: T?): Boolean = true
 
     open suspend fun fetchFromDatabase(): Resource<T> {
-        return try {
-            val loadedData = onLoadData()
-            Resource.success(loadedData)
-        } catch (e: Exception) {
-            Resource.error(e.message)
-        }
+        val loadedData = onLoadData()
+        return Resource.success(loadedData)
     }
 
     open suspend fun fetchFromNetwork(loadedResource: Resource<T>): Resource<T> {
-        return when (val result = call.await()) {
+        return when (val result = call().await()) {
             is Response.Success -> {
                 val fetchedData = result.data
                 if (shouldSave(loadedResource.data, fetchedData)) {

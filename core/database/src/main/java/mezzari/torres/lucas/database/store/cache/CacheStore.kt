@@ -8,5 +8,5 @@ import mezzari.torres.lucas.core.model.bo.Cache
  */
 interface CacheStore {
     suspend fun getCache(cacheId: String): Cache?
-    suspend fun saveCache(vararg caches: Cache)
+    suspend fun saveCache(vararg caches: Cache?): Boolean
 }

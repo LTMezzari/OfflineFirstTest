@@ -17,7 +17,11 @@ class CacheStoreImpl(private val dao: CacheDao): CacheStore {
         return cache.first().asEntry()
     }
 
-    override suspend fun saveCache(vararg caches: Cache) {
-        dao.putCache(caches.map { it.asEntity() })
+    override suspend fun saveCache(vararg caches: Cache?): Boolean {
+        val list = caches.mapNotNull { it?.asEntity() }
+        if (list.isEmpty())
+            return false
+        dao.putCache(list)
+        return true
     }
 }

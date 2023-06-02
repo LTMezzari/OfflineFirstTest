@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_main"
     app:startDestination="@id/splashFragment">
-    <include app:graph="@navigation/navigation_user_repositories" />
     <fragment
         android:id="@+id/splashFragment"
         android:name="mezzari.torres.lucas.offlinefirst.ui.splash.SplashFragment"
@@ -13,13 +12,9 @@
         <action
             android:id="@+id/action_splashFragment_to_navigation_user_repositories"
             app:destination="@id/navigation_user_repositories"
-            app:launchSingleTop="true"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_splashFragment_to_navigation_viacep"
-            app:destination="@id/navigation_viacep"
-            app:launchSingleTop="true"
+            app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <include app:graph="@navigation/navigation_user_repositories" />
     <include app:graph="@navigation/navigation_viacep" />
 </navigation>

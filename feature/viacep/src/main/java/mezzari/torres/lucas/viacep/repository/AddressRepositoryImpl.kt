@@ -15,7 +15,7 @@ import mezzari.torres.lucas.viacep.ViacepAPI
 class AddressRepositoryImpl(private val api: ViacepAPI) : AddressRepository {
     override fun getAddress(cep: String): Flow<Resource<Address>> {
         return flow {
-            DataBoundResource(this, OnlineStrategy(api.getAddress(cep)))
+            DataBoundResource(this, OnlineStrategy({ api.getAddress(cep) }))
         }
     }
 }

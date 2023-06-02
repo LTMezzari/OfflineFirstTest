@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Github Test Application</string>
+    <string name="title_repositories">Repositories</string>
+    <string name="title_addresses">Addresses</string>
 </resources>

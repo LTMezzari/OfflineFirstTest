@@ -15,7 +15,7 @@ import mezzari.torres.lucas.android.generic.BaseActivity
  */
 class MainActivity : BaseActivity() {
     override val navController: NavController by lazy {
-        (supportFragmentManager.findFragmentById(R.id.fgvNavHost) as NavHostFragment).navController
+        (supportFragmentManager.findFragmentById(R.id.fgv_nav_host) as NavHostFragment).navController
     }
 
     private val binding: ActivityMainBinding by lazy {
@@ -29,5 +29,6 @@ class MainActivity : BaseActivity() {
             navController,
             AppBarConfiguration(navController.graph)
         )
+        binding.bnvNavigation.setupWithNavController(navController)
     }
 }

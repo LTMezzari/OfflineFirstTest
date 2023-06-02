@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/navigation_user_repositories" android:title="@string/title_repositories"/>
+    <item android:id="@+id/navigation_viacep" android:title="@string/title_addresses"/>
+</menu>

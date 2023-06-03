@@ -3,7 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 android {
-    namespace 'mezzari.torres.lucas.viacep'
     compileSdk targetVersion
 
     viewBinding {
@@ -13,8 +12,9 @@ android {
     defaultConfig {
         minSdk minVersion
         targetSdk targetVersion
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-//        consumerProguardFiles "consumer-rules.pro"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -30,6 +30,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'mezzari.torres.lucas.viacep'
 }
 
 dependencies {

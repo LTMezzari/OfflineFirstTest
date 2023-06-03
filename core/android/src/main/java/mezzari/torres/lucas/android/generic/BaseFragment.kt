@@ -2,11 +2,13 @@ package mezzari.torres.lucas.android.generic
 
 import android.os.Bundle
 import androidx.annotation.IdRes
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import mezzari.torres.lucas.android.BuildConfig
+import mezzari.torres.lucas.android.archive.logError
 import java.lang.Exception
 
 /**
@@ -20,17 +22,25 @@ abstract class BaseFragment : Fragment() {
         try {
             navController.navigate(actionId, bundle)
         } catch (e: Exception) {
-            if (BuildConfig.DEBUG)
-                e.printStackTrace()
+            logError(e)
         }
     }
 
-    fun navigate(request: NavDeepLinkRequest) {
+    fun navigate(request: NavDeepLinkRequest, navOptions: NavOptions? = null) {
         try {
-            navController.navigate(request)
+            navController.navigate(request, navOptions)
         } catch (e: Exception) {
-            if (BuildConfig.DEBUG)
-                e.printStackTrace()
+            logError(e)
+        }
+    }
+
+    fun navigateToLink(link: String, navOptions: NavOptions? = null) {
+        try {
+            val uri = link.toUri()
+            val request = NavDeepLinkRequest.Builder.fromUri(uri).build()
+            navigate(request, navOptions)
+        } catch (e: Exception) {
+            logError(e)
         }
     }
 }

@@ -1,6 +1,7 @@
 package mezzari.torres.lucas.offlinefirst.ui
 
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -18,6 +19,8 @@ class MainActivity : BaseActivity() {
         (supportFragmentManager.findFragmentById(R.id.fgv_nav_host) as NavHostFragment).navController
     }
 
+    override val toolbar: Toolbar get() = binding.toolbar
+
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -27,7 +30,13 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
         binding.toolbar.setupWithNavController(
             navController,
-            AppBarConfiguration(navController.graph)
+            AppBarConfiguration(
+                setOf(
+                    R.id.splashFragment,
+                    mezzari.torres.lucas.user_repositories.R.id.searchFragment,
+                    mezzari.torres.lucas.viacep.R.id.searchAddressFragment
+                )
+            )
         )
         binding.bnvNavigation.setupWithNavController(navController)
     }

@@ -6,6 +6,7 @@ import mezzari.torres.lucas.database.di.getDatabaseModule
 import mezzari.torres.lucas.network.di.networkModule
 import mezzari.torres.lucas.user_repositories.di.userRepositoriesModule
 import mezzari.torres.lucas.android.di.getAndroidModule
+import mezzari.torres.lucas.viacep.di.viacepModule
 import org.koin.core.module.Module
 
 /**
@@ -14,10 +15,14 @@ import org.koin.core.module.Module
  */
 fun getModules(application: Application): List<Module> {
     return listOf(
+        //Core
         coreModule,
         getDatabaseModule(application),
         networkModule,
         getAndroidModule(application),
-        userRepositoriesModule
+
+        // Features
+        userRepositoriesModule,
+        viacepModule
     )
 }

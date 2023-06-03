@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.search.SearchAddressFragment">
+
+    <EditText
+        android:id="@+id/et_zip_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_zip_code"
+        app:layout_constraintEnd_toStartOf="@id/btn_search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pb_loader"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:elevation="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_search"
+        app:layout_constraintEnd_toEndOf="@id/btn_search"
+        app:layout_constraintStart_toStartOf="@id/btn_search"
+        app:layout_constraintTop_toTopOf="@id/btn_search"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_zip_code"
+        tools:text="Um erro aqui"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

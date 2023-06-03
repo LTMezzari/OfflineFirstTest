@@ -23,7 +23,6 @@ class RepositoryEntity (
 fun Repository.asEntity(): RepositoryEntity? {
     val id = id ?: return null
     val name = name ?: return null
-    val fullName = fullName ?: return null
     val description = description ?: return null
     val language = language ?: return null
     val userId = userId ?: return null

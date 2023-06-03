@@ -36,6 +36,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'mezzari.torres.lucas.offlinefirst'
 }
 
 dependencies {
@@ -69,4 +70,5 @@ dependencies {
     implementation project(":core:network")
     implementation project(':core:android')
     implementation project(":feature:user_repositories")
+    implementation project(":feature:viacep")
 }

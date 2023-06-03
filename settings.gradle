@@ -15,9 +15,10 @@ dependencyResolutionManagement {
 }
 rootProject.name = "OfflineFirst"
 include ':app'
+include ':commons'
 include ':core'
 include ':core:database'
 include ':core:network'
-include ':feature:user_repositories'
-include ':commons'
 include ':core:android'
+include ':feature:viacep'
+include ':feature:user_repositories'

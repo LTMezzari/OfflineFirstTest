@@ -38,8 +38,12 @@ class RepositoriesViewModel(
         return@map it.status == Resource.Status.LOADING
     }
     val error: LiveData<String> = Transformations.map(repositoriesResource) {
-        isLoadingMore.postValue(false)
-        return@map if (it.status == Resource.Status.FAILURE) it.message else null
+        return@map if (it.status == Resource.Status.FAILURE) {
+            isLoadingMore.postValue(false)
+            it.message
+        } else {
+            null
+        }
     }
     private val repositories: LiveData<List<Repository>> = Transformations.map(repositoriesResource) {
         return@map it.data

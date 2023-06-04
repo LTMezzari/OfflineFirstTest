@@ -3,7 +3,6 @@ package mezzari.torres.lucas.network.strategies
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -22,7 +21,7 @@ import retrofit2.Response
  * @author Lucas T. Mezzari
  * @since 01/06/2023
  */
-class OfflineStrategyTest {
+internal class OfflineStrategyTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()

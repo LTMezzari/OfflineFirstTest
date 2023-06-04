@@ -21,7 +21,12 @@
         android:name="mezzari.torres.lucas.viacep.ui.details.AddressDetailFragment"
         android:label="fragment_address_detail"
         tools:layout="@layout/fragment_address_detail" >
+        <argument
+            android:name="address"
+            app:nullable="true" />
         <deepLink
             app:uri="feature-viacep://mezzari.torres.lucas/addressDetailFragment" />
+        <deepLink
+            app:uri="feature-viacep://mezzari.torres.lucas/addressDetailFragment?address={address}" />
     </fragment>
 </navigation>

@@ -20,7 +20,7 @@ class AddressDetailFragment: BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val address = arguments?.get("address") as? Address ?: return
+        val address = findArgument<Address>("address") ?: return
         viewModel.address.postValue(address)
     }
 

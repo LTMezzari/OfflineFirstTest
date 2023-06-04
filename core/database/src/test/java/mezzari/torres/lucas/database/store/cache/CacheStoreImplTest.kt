@@ -17,7 +17,7 @@ import org.junit.Test
  * @author Lucas T. Mezzari
  * @since 01/06/2023
  */
-class CacheStoreImplTest {
+internal class CacheStoreImplTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()

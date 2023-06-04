@@ -1,6 +1,5 @@
 package mezzari.torres.lucas.network.strategies
 
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Deferred
 import mezzari.torres.lucas.core.model.bo.Cache
@@ -8,6 +7,7 @@ import mezzari.torres.lucas.database.store.cache.CacheStore
 import mezzari.torres.lucas.network.wrapper.Response
 import java.lang.IllegalArgumentException
 import java.lang.reflect.Type
+import mezzari.torres.lucas.network.archive.*
 
 /**
  * @author Lucas T. Mezzari
@@ -35,13 +35,13 @@ class CacheStrategy<T> constructor(
     private fun <T> Cache.parse(type: Type): T? {
         if (response.isBlank() || response.isEmpty())
             return null
-        return Gson().fromJson(response, type) as? T
+        return fromJson(response, type)
     }
 
     private fun transform(response: T): Cache {
         return Cache(
             callId,
-            Gson().toJson(response)
+            response.toJson()
         )
     }
 

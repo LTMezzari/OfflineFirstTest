@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
  * @author Lucas T. Mezzari
  * @since 12/11/2022
  */
-class SearchViewModelTest {
+internal class SearchViewModelTest {
     @Rule
     @JvmField
     val instantTaskExecutorRule = InstantTaskExecutorRule()

@@ -15,7 +15,7 @@ import java.lang.reflect.Field
  * @author Lucas T. Mezzari
  * @since 12/11/2022
  */
-class KotlinExtensionsTest {
+internal class KotlinExtensionsTest {
     // ----------------- Guard
 
     @Test

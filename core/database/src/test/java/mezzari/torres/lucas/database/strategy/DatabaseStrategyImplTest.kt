@@ -16,7 +16,7 @@ import org.junit.Test
  * @author Lucas T. Mezzari
  * @since 01/06/2023
  */
-class DatabaseStrategyImplTest {
+internal class DatabaseStrategyImplTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()

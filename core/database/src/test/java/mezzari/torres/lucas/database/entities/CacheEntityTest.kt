@@ -8,7 +8,7 @@ import org.junit.Test
  * @author Lucas T. Mezzari
  * @since 31/05/2023
  */
-class CacheEntityTest {
+internal class CacheEntityTest {
     // ----------------------- asModel
 
     @Test

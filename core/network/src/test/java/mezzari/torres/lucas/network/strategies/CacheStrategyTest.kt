@@ -26,7 +26,7 @@ import retrofit2.Response
  * @author Lucas T. Mezzari
  * @since 01/06/2023
  */
-class CacheStrategyTest {
+internal class CacheStrategyTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()

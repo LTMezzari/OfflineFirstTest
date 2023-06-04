@@ -21,7 +21,7 @@ internal typealias MyResult<T> = mezzari.torres.lucas.network.wrapper.Response<T
  * @author Lucas T. Mezzari
  * @since 01/06/2023
  */
-class OnlineStrategyTest {
+internal class OnlineStrategyTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()

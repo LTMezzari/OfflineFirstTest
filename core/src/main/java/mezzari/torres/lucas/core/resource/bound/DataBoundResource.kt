@@ -7,29 +7,10 @@ import mezzari.torres.lucas.core.resource.Resource
  * @author Lucas T. Mezzari
  * @since 30/08/2022
  */
-class DataBoundResource<T> private constructor(
+class DataBoundResource<T>(
     private val collector: FlowCollector<Resource<T>>,
-    private val strategy: Strategy<T>,
 ) : BoundResource<T> {
-    override suspend fun execute() {
+    override suspend fun execute(strategy: BoundResource.Strategy<T>) {
         strategy.execute(collector)
-    }
-
-    companion object {
-        suspend operator fun <T> invoke(
-            collector: FlowCollector<Resource<T>>,
-            strategy: Strategy<T>,
-        ): DataBoundResource<T> {
-            return DataBoundResource(
-                collector,
-                strategy,
-            ).also {
-                it.execute()
-            }
-        }
-    }
-
-    interface Strategy<T> {
-        suspend fun execute(collector: FlowCollector<Resource<T>>)
     }
 }

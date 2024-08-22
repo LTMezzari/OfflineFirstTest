@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="mezzari.torres.lucas.user_repositories.ui.search.SearchFragment"
+        android:name="mezzari.torres.lucas.feature.user_repositories.ui.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/repositoriesFragment"
-        android:name="mezzari.torres.lucas.user_repositories.ui.repositories.RepositoriesFragment"
+        android:name="mezzari.torres.lucas.feature.user_repositories.ui.repositories.RepositoriesFragment"
         android:label="fragment_repositories"
         tools:layout="@layout/fragment_repositories">
         <deepLink

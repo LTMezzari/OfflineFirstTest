@@ -29,7 +29,7 @@ internal class SearchViewModelTest {
 
     private lateinit var sub: SearchViewModel
     private lateinit var dispatcher: AppDispatcher
-    private lateinit var service: GithubRepository
+    private lateinit var service: mezzari.torres.lucas.user_repositories.repository.GithubRepository
     private lateinit var preferences: PreferencesManager
     private lateinit var session: SessionManager
 
@@ -54,7 +54,7 @@ internal class SearchViewModelTest {
                 override var main: CoroutineContext = Dispatchers.Unconfined
                 override var io: CoroutineContext = Dispatchers.Unconfined
             }
-        service = object : GithubRepository {
+        service = object : mezzari.torres.lucas.user_repositories.repository.GithubRepository {
             override fun getUser(userId: String): Flow<Resource<User>> {
                 return flow {
                     requestGetUserListener?.invoke(userId)

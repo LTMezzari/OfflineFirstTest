@@ -30,7 +30,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    namespace 'mezzari.torres.lucas.user_repositories'
+    namespace 'mezzari.torres.lucas.feature.user_repositories'
 }
 
 dependencies {
@@ -68,7 +68,6 @@ dependencies {
     //Project
     implementation project(":core")
     implementation project(":commons")
-    implementation project(":core:database")
-    implementation project(":core:network")
     implementation project(":core:android")
+    implementation project(":data:user_repositories")
 }

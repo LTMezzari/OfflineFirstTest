@@ -69,6 +69,8 @@ dependencies {
     implementation project(":core:database")
     implementation project(":core:network")
     implementation project(':core:android')
+    implementation project(":data:user_repositories")
+    implementation project(":data:viacep")
     implementation project(":feature:user_repositories")
     implementation project(":feature:viacep")
 }

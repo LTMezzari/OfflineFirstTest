@@ -33,8 +33,8 @@ class MainActivity : BaseActivity() {
             AppBarConfiguration(
                 setOf(
                     R.id.splashFragment,
-                    mezzari.torres.lucas.user_repositories.R.id.searchFragment,
-                    mezzari.torres.lucas.viacep.R.id.searchAddressFragment
+                    mezzari.torres.lucas.feature.user_repositories.R.id.searchFragment,
+                    mezzari.torres.lucas.feature.viacep.R.id.searchAddressFragment
                 )
             )
         )

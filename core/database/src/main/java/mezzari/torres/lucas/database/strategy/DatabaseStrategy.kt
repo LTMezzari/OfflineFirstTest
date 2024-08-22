@@ -2,14 +2,14 @@ package mezzari.torres.lucas.database.strategy
 
 import kotlinx.coroutines.flow.FlowCollector
 import mezzari.torres.lucas.core.resource.Resource
-import mezzari.torres.lucas.core.resource.bound.DataBoundResource
+import mezzari.torres.lucas.core.resource.bound.BoundResource
 import java.lang.Exception
 
 /**
  * @author Lucas T. Mezzari
  * @since 01/09/2022
  */
-abstract class DatabaseStrategy<T>: DataBoundResource.Strategy<T> {
+abstract class DatabaseStrategy<T>: BoundResource.Strategy<T> {
     override suspend fun execute(collector: FlowCollector<Resource<T>>) {
         try {
             collector.emit(Resource.loading())

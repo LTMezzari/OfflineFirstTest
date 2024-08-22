@@ -13,7 +13,7 @@ import mezzari.torres.lucas.network.archive.*
  * @author Lucas T. Mezzari
  * @since 02/09/2022
  */
-class CacheStrategy<T> constructor(
+class CacheStrategy<T> (
     private val callId: String,
     private val store: CacheStore,
     call: () -> Deferred<Response<T>>,

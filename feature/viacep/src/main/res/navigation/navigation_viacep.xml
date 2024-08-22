@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/searchAddressFragment"
-        android:name="mezzari.torres.lucas.viacep.ui.search.SearchAddressFragment"
+        android:name="mezzari.torres.lucas.feature.viacep.ui.search.SearchAddressFragment"
         android:label="fragment_search_address"
         tools:layout="@layout/fragment_search_address" >
         <action
@@ -18,12 +18,9 @@
     </fragment>
     <fragment
         android:id="@+id/addressDetailFragment"
-        android:name="mezzari.torres.lucas.viacep.ui.details.AddressDetailFragment"
+        android:name="mezzari.torres.lucas.feature.viacep.ui.details.AddressDetailFragment"
         android:label="fragment_address_detail"
         tools:layout="@layout/fragment_address_detail" >
-        <argument
-            android:name="address"
-            app:nullable="true" />
         <deepLink
             app:uri="feature-viacep://mezzari.torres.lucas/addressDetailFragment" />
         <deepLink

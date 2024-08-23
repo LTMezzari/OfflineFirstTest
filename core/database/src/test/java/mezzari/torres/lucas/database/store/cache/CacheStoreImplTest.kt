@@ -19,7 +19,6 @@ import org.junit.Test
  */
 internal class CacheStoreImplTest {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()
 
     private lateinit var dao: CacheDao
@@ -53,7 +52,6 @@ internal class CacheStoreImplTest {
 
     // ----------------------------- getCache(cacheId: String): Cache?
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Request Cache With Valid String And With Valid Return Should Return First Cache`() =
         runTest {
@@ -81,7 +79,6 @@ internal class CacheStoreImplTest {
             assertEquals(cacheResponse, result?.response)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Request Cache With Empty String Should Return Null`() =
         runTest {
@@ -92,7 +89,6 @@ internal class CacheStoreImplTest {
             assertNull(result)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Request Cache With Blank String Should Return Null`() =
         runTest {
@@ -103,7 +99,6 @@ internal class CacheStoreImplTest {
             assertNull(result)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Request Cache With Valid String And With Null Return Should Return Null`() =
         runTest {
@@ -124,7 +119,6 @@ internal class CacheStoreImplTest {
             assertNull(result)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Request Cache With Valid String And With Empty Return Should Return Null`() =
         runTest {
@@ -147,7 +141,6 @@ internal class CacheStoreImplTest {
 
     // ----------------------------- putCaches(vararg caches: Cache?): Boolean
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Save One Cache Should Return True And Parse It To CacheEntity`() =
         runTest {
@@ -168,7 +161,6 @@ internal class CacheStoreImplTest {
             assertTrue(result)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Save More Than One Cache Should Return True And Parse All To CacheEntity`() =
         runTest {
@@ -193,7 +185,6 @@ internal class CacheStoreImplTest {
             assertTrue(result)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Save More Than One Cache And One Null Should Return True And Parse All Not Null To CacheEntity`() =
         runTest {
@@ -219,7 +210,6 @@ internal class CacheStoreImplTest {
             assertTrue(result)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Save A Null Object Should Return False And Don't Execute Dao`() =
         runTest {
@@ -233,7 +223,6 @@ internal class CacheStoreImplTest {
             assertFalse(result)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Save Multiple Null Objects Should Return False And Don't Execute Dao`() =
         runTest {

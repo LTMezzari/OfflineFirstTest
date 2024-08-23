@@ -18,7 +18,6 @@ import org.junit.Test
  */
 internal class DatabaseStrategyImplTest {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()
 
     private lateinit var sub: DatabaseStrategy<Any>
@@ -39,7 +38,6 @@ internal class DatabaseStrategyImplTest {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Successfully Should Load And Return A Resource With Successful Status`() =
         runTest {

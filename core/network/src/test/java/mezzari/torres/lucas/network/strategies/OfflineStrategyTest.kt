@@ -23,14 +23,14 @@ import retrofit2.Response
  */
 internal class OfflineStrategyTest {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()
 
-    private lateinit var sub: OfflineStrategy<Any>
+    private lateinit var sub: OfflineStrategy<Any, Any>
     private lateinit var collector: FlowCollector<Resource<Any>>
     private lateinit var onFetchFromNetwork: () -> MyResult<Any>
     private lateinit var onLoadFromDatabase: () -> Any?
     private lateinit var onSaveToDatabase: (Any?) -> Unit
+    private var onTransform: ((Any?) -> Any?)? = null
     private var shouldSave: ((Any?, Any?) -> Boolean)? = null
     private var shouldFetch: ((Any?) -> Boolean)? = null
     private var onEmit: ((Resource<Any>) -> Unit)? = null
@@ -44,11 +44,13 @@ internal class OfflineStrategyTest {
         collector = FlowCollector { value -> onEmit?.invoke(value) }
         isSingleEmit = false
         isStrict = true
+        onTransform = null
     }
 
-    private fun createSub(isSingleEmit: Boolean = false, isStrict: Boolean = true): OfflineStrategy<Any> {
-        return object: OfflineStrategy<Any>(
+    private fun createSub(isSingleEmit: Boolean = false, isStrict: Boolean = true): OfflineStrategy<Any, Any> {
+        return object: OfflineStrategy<Any, Any>(
             call = { CompletableDeferred(onFetchFromNetwork()) },
+            onTransform = onTransform,
             strict = isStrict,
             singleEmit = isSingleEmit
         ) {
@@ -72,7 +74,6 @@ internal class OfflineStrategyTest {
 
     // ---------------- Load, Fetch, Save
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Successfully Should Load, Fetch, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -117,7 +118,56 @@ internal class OfflineStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `Execute Strategy Successfully With Transformation Should Load, Fetch, Save And Return A Resource With Successful Status`() =
+        runTest {
+            var counter = 0
+            val loaded = 2
+            val fetched = 3
+            val result = fetched.toString()
+            val finalReturn: MyResult<Any> = MyResult.create(Response.success(fetched))
+
+            onTransform = {
+                assertEquals(it, fetched)
+                result
+            }
+
+            sub = createSub(isSingleEmit, isStrict)
+
+            onLoadFromDatabase = {
+                loaded
+            }
+            onFetchFromNetwork = {
+                finalReturn
+            }
+            onSaveToDatabase = {
+                assertEquals(fetched, it)
+            }
+            shouldFetch = {
+                assertEquals(loaded, it)
+                true
+            }
+
+            onEmit = {
+                counter++
+                when (counter) {
+                    1 -> assertEquals(Resource.Status.LOADING, it.status)
+                    2 -> {
+                        assertEquals(Resource.Status.SUCCESS, it.status)
+                        assertEquals(loaded, it.data)
+                    }
+                    3 -> {
+                        assertEquals(Resource.Status.SUCCESS, it.status)
+                        assertEquals(result, it.data)
+                    }
+                    else -> assertTrue(false)
+                }
+            }
+
+            sub.execute(collector)
+            assertEquals(3, counter)
+        }
+
     @Test
     fun `Execute A Not Strict Strategy Successfully Should Load, Fetch, Save And Return A Outdated Resource With Successful Status`() =
         runTest {
@@ -165,7 +215,6 @@ internal class OfflineStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute A Single Emit Strategy Successfully Should Load, Fetch, Save And Return Only Once A Resource With Successful Status`() =
         runTest {
@@ -207,7 +256,6 @@ internal class OfflineStrategyTest {
             assertEquals(2, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute A Non Strict Single Emit Strategy Successfully Should Load, Fetch, Save And Return Only Once A Resource With Successful Status`() =
         runTest {
@@ -253,7 +301,6 @@ internal class OfflineStrategyTest {
 
     // ---------------- Load, Fetch
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Successfully But Not Save Should Load, Fetch And Return A Resource With Successful Status`() =
         runTest {
@@ -306,7 +353,6 @@ internal class OfflineStrategyTest {
 
     // ---------------- Load
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Successfully But Not Fetch Should Only Load And Return A Resource With Successful Status`() =
         runTest {
@@ -354,7 +400,6 @@ internal class OfflineStrategyTest {
             assertEquals(2, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strict Single Emit Strategy Successfully But Not Fetch Should Only Load And Return A Resource With Successful Status`() =
         runTest {
@@ -406,7 +451,6 @@ internal class OfflineStrategyTest {
 
     // ---------------- Fetch Failed
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Successfully With Network Error Should Load, Fetch And Return A Offline Resource With Successful Status`() =
         runTest {
@@ -454,7 +498,6 @@ internal class OfflineStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Single Emit Strategy Successfully With Network Error Should Load, Fetch And Return A Offline Resource With Successful Status`() =
         runTest {
@@ -501,7 +544,6 @@ internal class OfflineStrategyTest {
 
     // ---------------- Strategy Failed With Exception
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Failed With Database Exception Should Return A Resource With Error Status`() =
         runTest {
@@ -544,7 +586,6 @@ internal class OfflineStrategyTest {
             assertEquals(2, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Failed With Network Exception Should Load And Return A Resource With Error Status`() =
         runTest {
@@ -589,7 +630,6 @@ internal class OfflineStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strict Single Emit Strategy Failed With Network Exception Should Load And Return A Resource With Error Status`() =
         runTest {
@@ -631,7 +671,6 @@ internal class OfflineStrategyTest {
             assertEquals(2, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Not Strict, Single Emit Strategy Failed With Network Exception Should Load And Return A Resource With Error Status`() =
         runTest {

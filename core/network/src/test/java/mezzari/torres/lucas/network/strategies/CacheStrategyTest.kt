@@ -28,7 +28,6 @@ import retrofit2.Response
  */
 internal class CacheStrategyTest {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = StandardTestDispatcher()
 
     private lateinit var store: CacheStore
@@ -56,54 +55,67 @@ internal class CacheStrategyTest {
         return FlowCollector { value -> onEmit.invoke(value) }
     }
 
-    private fun <T : Any> createSub(
+    private fun <R: Any, T : Any> createSub(
         callId: String,
-        onLoad: () -> MyResult<T>,
+        onLoad: () -> MyResult<R>,
         type: Type,
+        onTransform: ((R?) -> T?)? = null,
         isStrict: Boolean = true,
         isSingleEmit: Boolean = false
-    ): CacheStrategy<T> {
+    ): CacheStrategy<R, T> {
         return CacheStrategy(
             callId = callId,
             store = store,
             call = { CompletableDeferred(onLoad()) },
-            isStrict,
-            isSingleEmit,
-            type
+            onTransform = onTransform,
+            strict = isStrict,
+            singleEmit = isSingleEmit,
+            type = type
         )
     }
 
-    private inline fun <reified T : Any> createSub(
+    private inline fun <reified R: Any, reified T : Any> createSub(
         callId: String,
-        noinline onLoad: () -> MyResult<T>,
+        noinline onLoad: () -> MyResult<R>,
+        noinline onTransform: ((R?) -> T?)? = null,
         isStrict: Boolean = true,
         isSingleEmit: Boolean = false
-    ): CacheStrategy<T> {
+    ): CacheStrategy<R, T> {
         return CacheStrategy(
             callId = callId,
             store = store,
             call = { CompletableDeferred(onLoad()) },
-            isStrict,
-            isSingleEmit,
-            type = object : TypeToken<T>() {}.type
+            onTransform = onTransform,
+            strict = isStrict,
+            singleEmit = isSingleEmit,
+            type = object : TypeToken<R>() {}.type
         )
     }
 
-    internal class TestSubject(val intValue: Int, val stringValue: String = "") {
-        fun toJson(): String {
+    internal class WrapperSubject<T: ParsableObject>(val data: T): ParsableObject {
+        override fun toJson(): String {
+            return "{\"data\":${data.toJson()}}"
+        }
+    }
+
+    internal class TestSubject(val intValue: Int, val stringValue: String = ""): ParsableObject {
+        override fun toJson(): String {
             return "{\"intValue\":$intValue,\"stringValue\":\"$stringValue\"}"
         }
     }
 
-    internal data class OtherTestSubject(val intValue: Int, val stringValue: String = "") {
-        fun toJson(): String {
+    internal data class OtherTestSubject(val intValue: Int, val stringValue: String = ""): ParsableObject {
+        override fun toJson(): String {
             return "{\"intValue\":$intValue,\"stringValue\":\"$stringValue\"}"
         }
+    }
+
+    internal interface ParsableObject {
+        fun toJson(): String
     }
 
     // ---------------- Load, Parse, Fetch, Transform, Save
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For TestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -114,7 +126,7 @@ internal class CacheStrategyTest {
 
             val fetchedBody = TestSubject(2)
             val response: MyResult<TestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<TestSubject> = createSub(callId, {
+            val sub: CacheStrategy<TestSubject, TestSubject> = createSub(callId, {
                 response
             })
 
@@ -151,7 +163,57 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `Execute Strategy For Wrapped TestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
+        runTest {
+            var counter = 0
+            val callId = "Test"
+            val loadedBody = TestSubject(1, "Test")
+            val wrappedBody = WrapperSubject(loadedBody)
+            val loadedCache = Cache(callId, wrappedBody.toJson())
+
+            val fetchedResult = TestSubject(2)
+            val fetchedBody = WrapperSubject(fetchedResult)
+            val response: MyResult<WrapperSubject<TestSubject>> = MyResult.create(Response.success(fetchedBody))
+            val sub: CacheStrategy<WrapperSubject<TestSubject>, TestSubject> = createSub(callId, {
+                response
+            }, onTransform = {
+                it?.data
+            })
+
+            onGetCache = {
+                assertEquals(callId, it)
+                loadedCache
+            }
+
+            onPutCache = {
+                assertEquals(1, it.size)
+                assertEquals(it[0]?.response, fetchedBody.toJson())
+                true
+            }
+
+            val collector: FlowCollector<Resource<TestSubject>> = createCollector {
+                counter++
+                when (counter) {
+                    1 -> assertEquals(Resource.Status.LOADING, it.status)
+                    2 -> {
+                        assertEquals(Resource.Status.SUCCESS, it.status)
+                        assertNotEquals(loadedBody, it.data)
+                        assertEquals(loadedBody.intValue, it.data?.intValue)
+                        assertEquals(loadedBody.stringValue, it.data?.stringValue)
+                    }
+                    3 -> {
+                        assertEquals(Resource.Status.SUCCESS, it.status)
+                        assertEquals(fetchedResult, it.data)
+                    }
+                    else -> assertTrue(false)
+                }
+            }
+
+            sub.execute(collector)
+            assertEquals(3, counter)
+        }
+
     @Test
     fun `Execute Strategy Passing Type For TestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -162,9 +224,9 @@ internal class CacheStrategyTest {
 
             val fetchedBody = TestSubject(2)
             val response: MyResult<TestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<TestSubject> = createSub(callId, {
+            val sub: CacheStrategy<TestSubject, TestSubject> = createSub(callId, {
                 response
-            }, TestSubject::class.java)
+            }, type = TestSubject::class.java)
 
             onGetCache = {
                 assertEquals(callId, it)
@@ -199,7 +261,57 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `Execute Strategy Passing Type For Wrapped TestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
+        runTest {
+            var counter = 0
+            val callId = "Test"
+            val loadedBody = TestSubject(1, "Test")
+            val wrappedBody = WrapperSubject(loadedBody)
+            val loadedCache = Cache(callId, wrappedBody.toJson())
+
+            val fetchedResult = TestSubject(2)
+            val fetchedBody = WrapperSubject(fetchedResult)
+            val response: MyResult<WrapperSubject<TestSubject>> = MyResult.create(Response.success(fetchedBody))
+            val sub: CacheStrategy<WrapperSubject<TestSubject>, TestSubject> = createSub(callId, {
+                response
+            }, onTransform = {
+                it?.data
+            }, type = object : TypeToken<WrapperSubject<TestSubject>>() {}.type)
+
+            onGetCache = {
+                assertEquals(callId, it)
+                loadedCache
+            }
+
+            onPutCache = {
+                assertEquals(1, it.size)
+                assertEquals(it[0]?.response, fetchedBody.toJson())
+                true
+            }
+
+            val collector: FlowCollector<Resource<TestSubject>> = createCollector {
+                counter++
+                when (counter) {
+                    1 -> assertEquals(Resource.Status.LOADING, it.status)
+                    2 -> {
+                        assertEquals(Resource.Status.SUCCESS, it.status)
+                        assertNotEquals(loadedBody, it.data)
+                        assertEquals(loadedBody.intValue, it.data?.intValue)
+                        assertEquals(loadedBody.stringValue, it.data?.stringValue)
+                    }
+                    3 -> {
+                        assertEquals(Resource.Status.SUCCESS, it.status)
+                        assertEquals(fetchedResult, it.data)
+                    }
+                    else -> assertTrue(false)
+                }
+            }
+
+            sub.execute(collector)
+            assertEquals(3, counter)
+        }
+
     @Test
     fun `Execute Strategy For OtherTestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -210,7 +322,7 @@ internal class CacheStrategyTest {
 
             val fetchedBody = OtherTestSubject(2)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
             })
 
@@ -245,7 +357,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Passing Type For OtherTestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -256,7 +367,7 @@ internal class CacheStrategyTest {
 
             val fetchedBody = OtherTestSubject(2)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
             }, OtherTestSubject::class.java)
 
@@ -291,7 +402,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For HashMap Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -302,7 +412,7 @@ internal class CacheStrategyTest {
 
             val fetchedBody = hashMapOf<String, Int>("three" to 3)
             val response: MyResult<HashMap<String, Int>> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<HashMap<String, Int>> = createSub(callId, {
+            val sub: CacheStrategy<HashMap<String, Int>, HashMap<String, Int>> = createSub(callId, {
                 response
             })
 
@@ -337,7 +447,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For OtherTestSubject Successfully With No Cache Should Load, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -346,7 +455,7 @@ internal class CacheStrategyTest {
 
             val fetchedBody = OtherTestSubject(2)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
             })
 
@@ -381,7 +490,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For OtherTestSubject Successfully With Empty Cache Response Should Load, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -391,7 +499,7 @@ internal class CacheStrategyTest {
 
             val fetchedBody = OtherTestSubject(2)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
             })
 
@@ -426,7 +534,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For OtherTestSubject Successfully With Blank Cache Response Should Load, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -436,7 +543,7 @@ internal class CacheStrategyTest {
 
             val fetchedBody = OtherTestSubject(2)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
             })
 
@@ -473,7 +580,6 @@ internal class CacheStrategyTest {
 
     // ---------------- Parse, Transform Primitives
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Passing Type For String Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -484,7 +590,7 @@ internal class CacheStrategyTest {
 
             val fetchedBody = "Another String"
             val response: MyResult<String> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<String> = createSub(callId, {
+            val sub: CacheStrategy<String, String> = createSub(callId, {
                 response
             }, String::class.java)
 
@@ -519,7 +625,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For String Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -530,7 +635,7 @@ internal class CacheStrategyTest {
 
             val fetchedBody = "Another String"
             val response: MyResult<String> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<String> = createSub(callId, {
+            val sub: CacheStrategy<String, String> = createSub(callId, {
                 response
             })
 
@@ -565,7 +670,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For Int Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -578,7 +682,7 @@ internal class CacheStrategyTest {
             val fetchedBody = 4
             val fetchedString = "$fetchedBody"
             val response: MyResult<Int> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<Int> = createSub(callId, {
+            val sub: CacheStrategy<Int, Int> = createSub(callId, {
                 response
             })
 
@@ -613,7 +717,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For Double Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -626,7 +729,7 @@ internal class CacheStrategyTest {
             val fetchedBody = 3.1
             val fetchedString = "$fetchedBody"
             val response: MyResult<Double> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<Double> = createSub(callId, {
+            val sub: CacheStrategy<Double, Double> = createSub(callId, {
                 response
             })
 
@@ -661,7 +764,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For Boolean Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -674,7 +776,7 @@ internal class CacheStrategyTest {
             val fetchedBody = true
             val fetchedString = "$fetchedBody"
             val response: MyResult<Boolean> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<Boolean> = createSub(callId, {
+            val sub: CacheStrategy<Boolean, Boolean> = createSub(callId, {
                 response
             })
 
@@ -709,7 +811,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For Float Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -722,7 +823,7 @@ internal class CacheStrategyTest {
             val fetchedBody = 2f
             val fetchedString = "$fetchedBody"
             val response: MyResult<Float> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<Float> = createSub(callId, {
+            val sub: CacheStrategy<Float, Float> = createSub(callId, {
                 response
             })
 
@@ -757,7 +858,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy For Long Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -770,7 +870,7 @@ internal class CacheStrategyTest {
             val fetchedBody = 1L
             val fetchedString = "$fetchedBody"
             val response: MyResult<Long> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<Long> = createSub(callId, {
+            val sub: CacheStrategy<Long, Long> = createSub(callId, {
                 response
             })
 
@@ -807,7 +907,6 @@ internal class CacheStrategyTest {
 
     // ---------------- Load With Single Emit Or Strict
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute A Non Strict Strategy For TestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -818,9 +917,9 @@ internal class CacheStrategyTest {
 
             val fetchedBody = TestSubject(2)
             val response: MyResult<TestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<TestSubject> = createSub(callId, {
+            val sub: CacheStrategy<TestSubject, TestSubject> = createSub(callId, {
                 response
-            }, false)
+            }, isStrict = false)
 
             onGetCache = {
                 assertEquals(callId, it)
@@ -860,7 +959,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute A Non Strict Strategy For OtherTestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -871,9 +969,9 @@ internal class CacheStrategyTest {
 
             val fetchedBody = OtherTestSubject(2)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
-            }, false)
+            }, isStrict = false)
 
             onGetCache = {
                 assertEquals(callId, it)
@@ -909,7 +1007,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute A Single Emit Strict Strategy For OtherTestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -920,9 +1017,9 @@ internal class CacheStrategyTest {
 
             val fetchedBody = OtherTestSubject(2)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
-            }, true, true)
+            }, isStrict = true, isSingleEmit = true)
 
             onGetCache = {
                 assertEquals(callId, it)
@@ -951,7 +1048,6 @@ internal class CacheStrategyTest {
             assertEquals(2, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute A Non Strict Single Emit Strategy For OtherTestSubject Successfully Should Load, Parse, Fetch, Transform, Save And Return A Resource With Successful Status`() =
         runTest {
@@ -962,9 +1058,9 @@ internal class CacheStrategyTest {
 
             val fetchedBody = OtherTestSubject(2)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.success(fetchedBody))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
-            }, false, true)
+            }, isStrict = false, isSingleEmit = true)
 
             onGetCache = {
                 assertEquals(callId, it)
@@ -996,7 +1092,6 @@ internal class CacheStrategyTest {
 
     // ---------------- Fetch Failed
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Successfully With Network Error Should Load, Parse And Return A Resource With Successful Status`() =
         runTest {
@@ -1008,7 +1103,7 @@ internal class CacheStrategyTest {
             val message = "Error here"
             val body = "{\"error\": \"$message\"}".toResponseBody(null)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.error(500, body))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
             })
 
@@ -1044,7 +1139,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute A Single Emit Strategy Successfully With Network Error Should Load, Parse And Return A Resource With Successful Status`() =
         runTest {
@@ -1056,9 +1150,9 @@ internal class CacheStrategyTest {
             val message = "Error here"
             val body = "{\"error\": \"$message\"}".toResponseBody(null)
             val response: MyResult<OtherTestSubject> = MyResult.create(Response.error(500, body))
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 response
-            }, true, true)
+            }, isStrict = true, isSingleEmit = true)
 
             onGetCache = {
                 assertEquals(callId, it)
@@ -1090,7 +1184,6 @@ internal class CacheStrategyTest {
 
     // ---------------- Strategy Failed With Exception
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Failed With Network Exception Should Load, Parse, And Return A Resource With Error Status`() =
         runTest {
@@ -1100,7 +1193,7 @@ internal class CacheStrategyTest {
             val loadedCache = Cache(callId, loadedBody.toJson())
 
             val message = "Error here"
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 throw Exception(message)
             })
 
@@ -1135,7 +1228,6 @@ internal class CacheStrategyTest {
             assertEquals(3, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute A Single Emit Strategy Failed With Network Exception Should Load, Parse, And Return A Resource With Error Status`() =
         runTest {
@@ -1145,9 +1237,9 @@ internal class CacheStrategyTest {
             val loadedCache = Cache(callId, loadedBody.toJson())
 
             val message = "Error here"
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 throw Exception(message)
-            }, true, true)
+            }, isStrict = true, isSingleEmit = true)
 
             onGetCache = {
                 assertEquals(callId, it)
@@ -1176,7 +1268,6 @@ internal class CacheStrategyTest {
             assertEquals(2, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Failed With Database Exception Should Return A Resource With Error Status`() =
         runTest {
@@ -1184,7 +1275,7 @@ internal class CacheStrategyTest {
             val callId = "Test"
 
             val message = "Error here"
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 assertTrue(false)
                 throw Exception("Not allowed")
             })
@@ -1216,14 +1307,13 @@ internal class CacheStrategyTest {
             assertEquals(2, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Failed With Empty Id Should Return A Resource With Error Status`() =
         runTest {
             var counter = 0
             val callId = ""
 
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 assertTrue(false)
                 throw Exception("Not allowed")
             })
@@ -1254,14 +1344,13 @@ internal class CacheStrategyTest {
             assertEquals(2, counter)
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Execute Strategy Failed With Blank Id Should Return A Resource With Error Status`() =
         runTest {
             var counter = 0
             val callId = "       "
 
-            val sub: CacheStrategy<OtherTestSubject> = createSub(callId, {
+            val sub: CacheStrategy<OtherTestSubject, OtherTestSubject> = createSub(callId, {
                 assertTrue(false)
                 throw Exception("Not allowed")
             })

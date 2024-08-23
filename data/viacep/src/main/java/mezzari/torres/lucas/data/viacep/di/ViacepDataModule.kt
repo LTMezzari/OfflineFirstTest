@@ -8,10 +8,6 @@ import org.koin.dsl.module
 
 /**
  * @author Lucas T. Mezzari
- * @author lucas.torres@dietbox.me
- * @author lucas.mezzari1@gmail.com
- *
- * @location Rio Grande do Sul, Brasil
  * @since 22/08/24
  */
 val viacepDataModule = module {

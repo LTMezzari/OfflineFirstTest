@@ -46,7 +46,7 @@ class SearchFragment : BaseFragment() {
             viewModel.getUser callback@{
                 if (it == null)
                     return@callback
-                navigate(R.id.action_searchFragment_to_repositoriesFragment)
+                navigateTo(R.id.action_searchFragment_to_repositoriesFragment)
             }
         }
     }

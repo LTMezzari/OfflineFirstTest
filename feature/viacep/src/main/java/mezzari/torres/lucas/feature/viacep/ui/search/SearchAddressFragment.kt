@@ -42,7 +42,7 @@ class SearchAddressFragment: BaseFragment() {
                 val address = it ?: return@search
                 val bundle = Bundle()
                 bundle.putSerializable("address", address)
-                navigate(R.id.action_searchAddressFragment_to_addressDetailFragment, bundle)
+                navigateTo(R.id.action_searchAddressFragment_to_addressDetailFragment, bundle)
             }
         }
         binding.tvError.bindTo(viewModel.error) {

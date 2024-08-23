@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import mezzari.torres.lucas.android.widgets.recycler.adapter.PaginatedAdapter
+import mezzari.torres.lucas.commons.recycler.adapter.PaginatedAdapter
 import mezzari.torres.lucas.core.model.bo.Repository
 import mezzari.torres.lucas.feature.user_repositories.R
 import mezzari.torres.lucas.feature.user_repositories.databinding.RowRepositoryBinding

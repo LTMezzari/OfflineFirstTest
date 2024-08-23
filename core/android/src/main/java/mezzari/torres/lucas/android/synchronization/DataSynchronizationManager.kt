@@ -3,19 +3,25 @@ package mezzari.torres.lucas.android.synchronization
 import android.content.Context
 import android.util.Log
 import androidx.work.*
+import mezzari.torres.lucas.android.logger.AppLogger
 import mezzari.torres.lucas.android.synchronization.handler.SynchronizationHandler
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.concurrent.TimeUnit
 
 /**
  * @author Lucas T. Mezzari
  * @since 02/09/2022
  */
-class DataSynchronizationManager(private val manager: WorkManager) : SynchronizationManager {
+class DataSynchronizationManager(
+    private val manager: WorkManager,
+    private val logger: AppLogger,
+) : SynchronizationManager {
 
     override val handlers: ArrayList<SynchronizationHandler> by ::mHandlers
 
     override fun scheduleSynchronizations() {
-        Log.d(javaClass.simpleName, "Scheduling Worker")
+        logger.logMessage("Scheduling Worker")
         manager.enqueueUniquePeriodicWork(
             this::class.java.name,
             ExistingPeriodicWorkPolicy.KEEP,
@@ -24,7 +30,7 @@ class DataSynchronizationManager(private val manager: WorkManager) : Synchroniza
     }
 
     override fun cancelSynchronization() {
-        Log.d(javaClass.simpleName, "Canceling Worker")
+        logger.logMessage("Canceling Worker")
         manager.cancelUniqueWork(this::class.java.name)
     }
 
@@ -38,7 +44,7 @@ class DataSynchronizationManager(private val manager: WorkManager) : Synchroniza
     private fun buildWorkRequest(): WorkRequest {
         return PeriodicWorkRequest.Builder(
             SynchronizationWorker::class.java,
-            3,
+            15,
             TimeUnit.MINUTES,
             1,
             TimeUnit.HOURS
@@ -48,17 +54,19 @@ class DataSynchronizationManager(private val manager: WorkManager) : Synchroniza
     class SynchronizationWorker(
         context: Context,
         params: WorkerParameters
-    ) : CoroutineWorker(context, params) {
+    ) : CoroutineWorker(context, params), KoinComponent {
+
+        private val logger: AppLogger by inject()
+
         override suspend fun doWork(): Result {
-            Log.d(DataSynchronizationManager::class.java.simpleName, "Starting Work")
+            logger.logMessage("Starting Work")
             for (handler in mHandlers) {
                 val wasSuccessful = handler.synchronize()
-                Log.d(
-                    javaClass.simpleName,
+                logger.logMessage(
                     "${handler.javaClass.simpleName} was successful? $wasSuccessful"
                 )
                 if (!wasSuccessful)
-                    return Result.Retry()
+                    return Result.failure()
             }
             return Result.success()
         }

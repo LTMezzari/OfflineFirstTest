@@ -3,7 +3,7 @@ package mezzari.torres.lucas.feature.user_repositories.ui.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import mezzari.torres.lucas.android.generic.BaseViewModel
@@ -34,10 +34,10 @@ class RepositoriesViewModel(
 
     private val repositoriesResource: MutableLiveData<Resource<List<Repository>>> =
         MutableLiveData()
-    val isLoading: LiveData<Boolean> = Transformations.map(repositoriesResource) {
+    val isLoading: LiveData<Boolean> = repositoriesResource.map {
         return@map it.status == Resource.Status.LOADING
     }
-    val error: LiveData<String> = Transformations.map(repositoriesResource) {
+    val error: LiveData<String?> = repositoriesResource.map {
         return@map if (it.status == Resource.Status.FAILURE) {
             isLoadingMore.postValue(false)
             it.message
@@ -45,10 +45,10 @@ class RepositoriesViewModel(
             null
         }
     }
-    private val repositories: LiveData<List<Repository>> = Transformations.map(repositoriesResource) {
-        return@map it.data
+    private val repositories: LiveData<List<Repository>> = repositoriesResource.map {
+        return@map it.data ?: emptyList()
     }
-    val isOutdated: LiveData<Boolean> = Transformations.map(repositoriesResource) {
+    val isOutdated: LiveData<Boolean> = repositoriesResource.map {
         hasNewData = it is OutdatedResource
         return@map it is OutdatedResource
     }

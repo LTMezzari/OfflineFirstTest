@@ -83,7 +83,7 @@ fun CheckBox.bindTo(
 }
 
 fun TextView.bindTo(
-    property: LiveData<String>,
+    property: LiveData<String?>,
     owner: LifecycleOwner = context as LifecycleOwner,
     observer: ((String?) -> Unit)? = null
 ) {

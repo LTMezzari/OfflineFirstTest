@@ -2,7 +2,7 @@ package mezzari.torres.lucas.feature.viacep.ui.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import mezzari.torres.lucas.android.generic.BaseViewModel
@@ -23,10 +23,10 @@ class SearchAddressViewModel(
     val cep: MutableLiveData<String> = MutableLiveData()
 
     private val addressResource: MutableLiveData<Resource<Address>> = MutableLiveData()
-    val isLoading: LiveData<Boolean> = Transformations.map(addressResource) {
+    val isLoading: LiveData<Boolean> = addressResource.map {
         return@map it?.status == Resource.Status.LOADING
     }
-    val error: LiveData<String> = Transformations.map(addressResource) {
+    val error: LiveData<String?> = addressResource.map {
         return@map it?.message
     }
 

@@ -25,14 +25,14 @@ class SearchViewModel(
     val search: MutableLiveData<String> = MutableLiveData()
 
     private val searchResource: MutableLiveData<Resource<User>> = MutableLiveData()
-    val isLoading: LiveData<Boolean> = Transformations.map(searchResource) {
+    val isLoading: LiveData<Boolean> = searchResource.map {
         return@map it?.status == Resource.Status.LOADING
     }
-    val error: LiveData<String> = Transformations.map(searchResource) {
+    val error: LiveData<String?> = searchResource.map {
         return@map if (it.status != Resource.Status.FAILURE) null else it.message
     }
 
-    val isSearchValid: LiveData<Boolean> = Transformations.map(search) {
+    val isSearchValid: LiveData<Boolean> = search.map {
         return@map it != null &&
                 !it.isNullOrBlank() &&
                 !it.isNullOrEmpty()

@@ -39,7 +39,7 @@ class SplashFragment: BaseFragment() {
             delay(2000)
             launch(dispatcher.main) {
                 // Move to next page
-                navigate(R.id.action_splashFragment_to_navigation_user_repositories)
+                navigateTo(R.id.action_splashFragment_to_navigation_user_repositories)
             }
         }
     }

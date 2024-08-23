@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_image_picker">"Escolha uma opção"</string>
+
+    <string name="label_ok">OK</string>
+    <string name="label_attention">Atenção</string>
+
+    <string name="message_image_permission_not_granted">Para poder buscar uma imagem você precisa dar permissão para o aplicativo acessar a câmera e galeria.</string>
+    <string name="message_connection_error">Sem conexão à internet. Verifique sua conexão e tente novamente.</string>
+    <string name="message_failed_review">Não foi possível avaliar o aplicativo</string>
+
+    <string-array name="array_image_picker">
+        <item>Câmera</item>
+        <item>Galeria</item>
+    </string-array>
+</resources>

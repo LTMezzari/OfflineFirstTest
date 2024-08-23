@@ -23,12 +23,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility jvm_target
+        targetCompatibility jvm_target
     }
+
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = jvm_target
     }
     namespace 'mezzari.torres.lucas.feature.user_repositories'
 }

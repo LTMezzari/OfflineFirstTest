@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.android.widgets.recycler.manager
+package mezzari.torres.lucas.commons.recycler.manager
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

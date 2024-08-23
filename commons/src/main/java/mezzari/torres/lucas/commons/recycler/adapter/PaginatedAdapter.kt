@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.android.widgets.recycler.adapter
+package mezzari.torres.lucas.commons.recycler.adapter
 
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView

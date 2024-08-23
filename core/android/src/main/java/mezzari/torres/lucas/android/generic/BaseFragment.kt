@@ -1,76 +1,111 @@
 package mezzari.torres.lucas.android.generic
 
-import android.net.Uri
 import android.os.Bundle
-import androidx.annotation.IdRes
-import androidx.core.net.toUri
+import android.view.View
+import androidx.annotation.CallSuper
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
-import mezzari.torres.lucas.android.archive.logError
+import com.google.android.material.snackbar.Snackbar
+import mezzari.torres.lucas.android.interfaces.MessagePresenter
+import mezzari.torres.lucas.android.logger.AppLogger
+import mezzari.torres.lucas.android.navigation.NavigationManager
+import mezzari.torres.lucas.core.archive.elvis
 import mezzari.torres.lucas.network.archive.fromJson
-import mezzari.torres.lucas.network.archive.toJson
-import java.lang.Exception
+import org.koin.android.ext.android.inject
 
 /**
  * @author Lucas T. Mezzari
  * @since 30/08/2022
  */
 abstract class BaseFragment : Fragment() {
-    protected val navController: NavController get() = findNavController()
 
-    protected fun navigate(@IdRes actionId: Int, bundle: Bundle? = null) {
-        try {
-            navController.navigate(actionId, bundle)
-        } catch (e: Exception) {
-            logError(e)
-        }
+    protected val logger: AppLogger by inject()
+
+    @CallSuper
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        onInitializeViews()
+        onBindViews()
+        onAddListeners()
+        onAddObservables()
     }
 
-    protected fun navigate(request: NavDeepLinkRequest, navOptions: NavOptions? = null) {
-        try {
-            navController.navigate(request, navOptions)
-        } catch (e: Exception) {
-            logError(e)
+    open fun onBindViews() {}
+
+    open fun onInitializeViews() {}
+
+    open fun onAddListeners() {}
+
+    open fun onAddObservables() {}
+
+    open fun showMessage(
+        @StringRes messageId: Int?,
+        duration: Int = Snackbar.LENGTH_LONG,
+        type: MessagePresenter.Type = MessagePresenter.Type.ERROR
+    ) {
+        val message = messageId ?: return
+        if (context == null || this@BaseFragment.isDetached) {
+            return
         }
+        showMessage(getString(message), duration, type)
     }
 
-    protected fun navigateToLink(link: String, navOptions: NavOptions? = null) {
-        try {
-            val uri = link.toUri()
-            val request = NavDeepLinkRequest.Builder.fromUri(uri).build()
-            navigate(request, navOptions)
-        } catch (e: Exception) {
-            logError(e)
+    open fun showMessage(
+        message: String?,
+        duration: Int = Snackbar.LENGTH_LONG,
+        type: MessagePresenter.Type = MessagePresenter.Type.ERROR
+    ) {
+        val text = message ?: return
+        val presenter = activity as? MessagePresenter elvis {
+            logger.logMessage(text)
+            return
         }
+        presenter.showMessage(text, duration, type)
     }
 
-    protected fun navigateToLink(link: String, arguments: Map<String, Any> = mapOf(), navOptions: NavOptions? = null) {
-        try {
-            val uriBuilder = Uri.Builder().encodedPath(link)
-            for ((key, argument) in arguments) {
-                uriBuilder.appendQueryParameter(key, argument.toJson())
-            }
-            val request = NavDeepLinkRequest.Builder.fromUri(uriBuilder.build()).build()
-            navigate(request, navOptions)
-        } catch (e: Exception) {
-            logError(e)
+    fun navigateTo(
+        link: String?,
+        arguments: Map<String, Any> = mapOf()
+    ) {
+        if (link == null || context == null) {
+            return
         }
+        NavigationManager.of(this).withArguments(arguments).navigateTo(link)
     }
 
-    protected inline fun <reified T>findArgument(key: String): T? {
+    fun navigateTo(direction: Int?, extras: Bundle? = null) {
+        if (direction == null || context == null) {
+            return
+        }
+        NavigationManager.of(this).withBundle(extras).navigateTo(direction)
+    }
+
+    fun navigateBack() {
+        if (context == null) {
+            return
+        }
+        NavigationManager.of(this).navigateUp()
+    }
+
+    protected inline fun <reified T> findArgument(key: String): T? {
         return when {
             arguments?.containsKey(key) == true -> {
                 val argument = arguments?.get(key) ?: return null
-                if (!T::class.java.isAssignableFrom(argument::class.java)) {
-                    return fromJson(arguments?.get(key) as? String)
+                if (argument is T) {
+                    if (argument is String) {
+                        return argument.removePrefix("\"").removeSuffix("\"") as? T
+                    }
+
+                    return argument
                 }
 
-                arguments?.get(key) as? T
+                if (!T::class.java.isAssignableFrom(argument::class.java)) {
+                    return fromJson(argument as? String)
+                }
+
+                argument as? T
             }
-            arguments?.containsKey("${key}_json") == true -> fromJson(arguments?.get(key) as? String)
+
             else -> null
         }
     }

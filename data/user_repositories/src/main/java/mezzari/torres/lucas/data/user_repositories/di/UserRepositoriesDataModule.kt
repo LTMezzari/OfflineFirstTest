@@ -10,10 +10,6 @@ import org.koin.dsl.module
 
 /**
  * @author Lucas T. Mezzari
- * @author lucas.torres@dietbox.me
- * @author lucas.mezzari1@gmail.com
- *
- * @location Rio Grande do Sul, Brasil
  * @since 22/08/24
  */
 val userRepositoriesDataModule = module {
@@ -28,7 +24,8 @@ val userRepositoriesDataModule = module {
     single<SynchronizationHandler> {
         RepositoryHandler(
             get(),
-            get()
+            get(),
+            get(),
         )
     }
     single<GithubAPI> {

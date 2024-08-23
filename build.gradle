@@ -1,41 +1,42 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id 'com.android.application' version '7.4.2' apply false
-    id 'com.android.library' version '7.4.2' apply false
-    id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
-    id 'org.jetbrains.kotlin.kapt' version "1.7.10"
-    id 'org.jetbrains.kotlin.jvm' version '1.6.21' apply false
-    id 'com.android.dynamic-feature' version '7.4.2' apply false
+    id 'com.android.application' version '8.5.2' apply false
+    id 'com.android.library' version '8.5.2' apply false
+    id 'org.jetbrains.kotlin.android' version '2.0.20' apply false
+    id 'org.jetbrains.kotlin.kapt' version "2.0.20"
+    id 'org.jetbrains.kotlin.jvm' version '2.0.20' apply false
 }
 
 ext {
     mVersionName = "1.0.0"
     mVersionCode = 1
 
-    toolsVersion = "29.0.3"
-    targetVersion = 32
+    targetVersion = 34
     minVersion = 21
 
+    jvm_target = JavaVersion.VERSION_17
+
     //Libraries Version
-    coroutinesVersion = '1.6.4'
-    navigationVersion = '2.5.1'
-    retrofitVersion = '2.9.0'
-    koinVersion = '3.2.0'
-    roomVersion = '2.4.3'
-    workVersion = "2.7.1"
+    coroutinesVersion = '1.8.1'
+    navigationVersion = '2.7.7'
+    retrofitVersion = '2.11.0'
+    koinVersion = '3.5.3'
+    roomVersion = '2.6.1'
+    workVersion = "2.9.0"
+    googlePlayReview = '2.0.1'
 
     libraries = [
             //Android
-            android_core       : "androidx.core:core-ktx:1.8.0",
-            app_compat         : "androidx.appcompat:appcompat:1.5.0",
-            material           : "com.google.android.material:material:1.6.1",
+            android_core       : "androidx.core:core-ktx:1.13.1",
+            app_compat         : "androidx.appcompat:appcompat:1.7.0",
+            material           : "com.google.android.material:material:1.12.0",
             swipe_refresh      : "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0",
 
             //Test
-            test_core          : 'androidx.arch.core:core-testing:2.1.0',
+            test_core          : 'androidx.arch.core:core-testing:2.2.0',
             junit_core         : "junit:junit:4.13.2",
-            junit_android      : "androidx.test.ext:junit:1.1.3",
-            espresso_core      : "androidx.test.espresso:espresso-core:3.4.0",
+            junit_android      : "androidx.test.ext:junit:1.1.5",
+            espresso_core      : "androidx.test.espresso:espresso-core:3.5.1",
 
             //Coroutines
             coroutines_core    : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
@@ -44,6 +45,10 @@ ext {
 
             //Work Manager
             work_manager       : "androidx.work:work-runtime-ktx:$workVersion",
+
+            //Review
+            review             : "com.google.android.play:review:$googlePlayReview",
+            review_ktx         : "com.google.android.play:review-ktx:$googlePlayReview",
 
             //Navigation
             navigation_fragment: "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
@@ -62,6 +67,16 @@ ext {
             //Room
             room_core          : "androidx.room:room-ktx:$roomVersion",
             room_processor     : "androidx.room:room-compiler:$roomVersion",
+
+            //Firebase
+            google_crashlytics : 'com.google.firebase:firebase-crashlytics:19.0.2',
+            firebase_messaging : 'com.google.firebase:firebase-messaging:24.0.0',
+
+            //Timber
+            timber             : 'com.jakewharton.timber:timber:5.0.1',
+
+            //Joda Time
+            joda_time          : 'joda-time:joda-time:2.12.7',
 
             //My Libraries
             kotlin_network     : "com.github.LTMezzari:kotlin-network:0.8.4",

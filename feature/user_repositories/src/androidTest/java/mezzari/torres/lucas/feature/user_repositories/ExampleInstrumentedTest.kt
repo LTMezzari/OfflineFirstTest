@@ -1,4 +1,4 @@
-package cmezzari.torres.lucas.data.viacep
+package mezzari.torres.lucas.feature.user_repositories
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("cmezzari.torres.lucas.data.viacep.test", appContext.packageName)
+        assertEquals("mezzari.torres.lucas.user_repositories.test", appContext.packageName)
     }
 }

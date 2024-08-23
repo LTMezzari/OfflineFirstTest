@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.viacep
+package mezzari.torres.lucas.data.user_repositories
 
 import org.junit.Test
 

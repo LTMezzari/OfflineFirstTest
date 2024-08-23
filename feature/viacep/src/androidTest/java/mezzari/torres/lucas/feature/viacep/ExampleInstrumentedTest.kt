@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.viacep
+package mezzari.torres.lucas.feature.viacep
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

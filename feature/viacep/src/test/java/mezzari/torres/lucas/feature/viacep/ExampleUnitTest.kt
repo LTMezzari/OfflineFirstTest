@@ -1,4 +1,4 @@
-package cmezzari.torres.lucas.data.viacep
+package mezzari.torres.lucas.feature.viacep
 
 import org.junit.Test
 

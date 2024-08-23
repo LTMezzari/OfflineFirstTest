@@ -1,4 +1,4 @@
-package mezzari.torres.lucas.user_repositories.ui.search
+package mezzari.torres.lucas.feature.user_repositories.ui.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +10,7 @@ import mezzari.torres.lucas.core.interfaces.AppDispatcher
 import mezzari.torres.lucas.core.model.bo.Repository
 import mezzari.torres.lucas.core.model.bo.User
 import mezzari.torres.lucas.core.resource.Resource
-import mezzari.torres.lucas.user_repositories.repository.GithubRepository
+import mezzari.torres.lucas.data.user_repositories.repository.GithubRepository
 import org.junit.Assert.*
 
 import org.junit.Before
@@ -29,7 +29,7 @@ internal class SearchViewModelTest {
 
     private lateinit var sub: SearchViewModel
     private lateinit var dispatcher: AppDispatcher
-    private lateinit var service: mezzari.torres.lucas.user_repositories.repository.GithubRepository
+    private lateinit var service: GithubRepository
     private lateinit var preferences: PreferencesManager
     private lateinit var session: SessionManager
 
@@ -54,7 +54,7 @@ internal class SearchViewModelTest {
                 override var main: CoroutineContext = Dispatchers.Unconfined
                 override var io: CoroutineContext = Dispatchers.Unconfined
             }
-        service = object : mezzari.torres.lucas.user_repositories.repository.GithubRepository {
+        service = object : GithubRepository {
             override fun getUser(userId: String): Flow<Resource<User>> {
                 return flow {
                     requestGetUserListener?.invoke(userId)

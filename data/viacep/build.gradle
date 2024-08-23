@@ -38,6 +38,10 @@ dependencies {
     implementation libraries.coroutines_core
     implementation libraries.coroutines
 
+    //Test
+    testImplementation libraries.junit_core
+    androidTestImplementation libraries.junit_android
+
     // Koin
     implementation libraries.koin_core
 

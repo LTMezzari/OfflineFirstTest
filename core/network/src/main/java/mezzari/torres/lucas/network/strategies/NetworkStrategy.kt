@@ -1,11 +1,21 @@
 package mezzari.torres.lucas.network.strategies
 
-import kotlinx.coroutines.Deferred
 import mezzari.torres.lucas.core.resource.bound.BoundResource
-import mezzari.torres.lucas.network.wrapper.Response
+import mezzari.torres.lucas.network.archive.DeferredResult
+import mezzari.torres.lucas.network.archive.TransformResult
 
 /**
  * @author Lucas T. Mezzari
  * @since 01/06/2023
  */
-abstract class NetworkStrategy<T>(val call: () -> Deferred<Response<T>>): BoundResource.Strategy<T>
+abstract class NetworkStrategy<ResponseType, ResultType>(
+    protected val call: DeferredResult<ResponseType>,
+    protected val onTransform: TransformResult<ResponseType, ResultType>? = null
+): BoundResource.Strategy<ResultType> {
+    open fun transformResult(response: ResponseType?): ResultType? {
+        onTransform?.run {
+            return invoke(response)
+        }
+        return response as? ResultType
+    }
+}

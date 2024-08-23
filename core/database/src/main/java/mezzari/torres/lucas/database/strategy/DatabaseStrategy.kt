@@ -9,8 +9,8 @@ import java.lang.Exception
  * @author Lucas T. Mezzari
  * @since 01/09/2022
  */
-abstract class DatabaseStrategy<T>: BoundResource.Strategy<T> {
-    override suspend fun execute(collector: FlowCollector<Resource<T>>) {
+abstract class DatabaseStrategy<ResultType>: BoundResource.Strategy<ResultType> {
+    override suspend fun execute(collector: FlowCollector<Resource<ResultType>>) {
         try {
             collector.emit(Resource.loading())
             collector.emit(Resource.success(onLoadData()))
@@ -19,5 +19,15 @@ abstract class DatabaseStrategy<T>: BoundResource.Strategy<T> {
         }
     }
 
-    abstract suspend fun onLoadData(): T?
+    abstract suspend fun onLoadData(): ResultType?
+
+    companion object {
+        inline fun <reified T> create(noinline databaseCall: suspend () -> T?): DatabaseStrategy<T> {
+            return object : DatabaseStrategy<T>() {
+                override suspend fun onLoadData(): T? {
+                    return databaseCall.invoke()
+                }
+            }
+        }
+    }
 }

@@ -1,10 +1,11 @@
 package mezzari.torres.lucas.network.strategies
 
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.FlowCollector
 import mezzari.torres.lucas.network.wrapper.OfflineResource
 import mezzari.torres.lucas.core.resource.OutdatedResource
 import mezzari.torres.lucas.core.resource.Resource
+import mezzari.torres.lucas.network.archive.DeferredResult
+import mezzari.torres.lucas.network.archive.TransformResult
 import mezzari.torres.lucas.network.wrapper.Response
 import java.lang.Exception
 
@@ -12,13 +13,14 @@ import java.lang.Exception
  * @author Lucas T. Mezzari
  * @since 31/08/2022
  */
-abstract class OfflineStrategy<T>(
-    call: () -> Deferred<Response<T>>,
+abstract class OfflineStrategy<ResponseType, ResultType>(
+    call: DeferredResult<ResponseType>,
     private val strict: Boolean = true,
     private val singleEmit: Boolean = false,
-) : NetworkStrategy<T>(call) {
+    onTransform: TransformResult<ResponseType, ResultType>? = null
+) : NetworkStrategy<ResponseType, ResultType>(call, onTransform) {
     override suspend fun execute(
-        collector: FlowCollector<Resource<T>>,
+        collector: FlowCollector<Resource<ResultType>>,
     ) {
         try {
             collector.emit(Resource.loading())
@@ -38,22 +40,22 @@ abstract class OfflineStrategy<T>(
         }
     }
 
-    abstract suspend fun onSaveData(data: T?)
-    abstract suspend fun onLoadData(): T?
-    open fun shouldSave(loadedData: T?, receivedData: T?): Boolean = true
-    open fun shouldFetch(loadedData: T?): Boolean = true
+    abstract suspend fun onSaveData(data: ResponseType?)
+    abstract suspend fun onLoadData(): ResultType?
+    open fun shouldSave(loadedData: ResultType?, receivedData: ResultType?): Boolean = true
+    open fun shouldFetch(loadedData: ResultType?): Boolean = true
 
-    open suspend fun fetchFromDatabase(): Resource<T> {
+    open suspend fun fetchFromDatabase(): Resource<ResultType> {
         val loadedData = onLoadData()
         return Resource.success(loadedData)
     }
 
-    open suspend fun fetchFromNetwork(loadedResource: Resource<T>): Resource<T> {
+    open suspend fun fetchFromNetwork(loadedResource: Resource<ResultType>): Resource<ResultType> {
         return when (val result = call().await()) {
             is Response.Success -> {
-                val fetchedData = result.data
+                val fetchedData = transformResult(result.data)
                 if (shouldSave(loadedResource.data, fetchedData)) {
-                    onSaveData(fetchedData)
+                    onSaveData(result.data)
                 }
                 if (singleEmit || strict)
                     return Resource.success(fetchedData)
@@ -61,7 +63,8 @@ abstract class OfflineStrategy<T>(
                 return OutdatedResource.success(loadedResource, fetchedData)
             }
             is Response.Failure -> {
-                OfflineResource.create(loadedResource, result.error, result.data)
+                val data = transformResult(result.data)
+                OfflineResource.create(loadedResource, result.error, data)
             }
         }
     }

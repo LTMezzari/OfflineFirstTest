@@ -40,7 +40,7 @@ class GithubRepositoryImpl(
         return flow {
             DataBoundResource(
                 this
-            ).execute(CacheStrategy<List<Repository>>(
+            ).execute(CacheStrategy<List<Repository>, List<Repository>>(
                 "${this@GithubRepositoryImpl::class.java.simpleName}:getRepositories:$userId,$page",
                 cacheRepository,
                 { api.getUserRepositories(userId, page, 10) },
@@ -54,10 +54,10 @@ class GithubRepositoryImpl(
         return flow {
             DataBoundResource(
                 this
-            ).execute(OnlineStrategy({ api.getUserRepositories(userId) }) {
+            ).execute(OnlineStrategy({ api.getUserRepositories(userId) }, onResultSuccess = {
                 val repositories = it ?: return@OnlineStrategy
                 repositoriesRepository.saveRepositories(repositories)
-            })
+            }))
         }
     }
 }
